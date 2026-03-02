@@ -1,21 +1,47 @@
 package app.demo.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "rezepte")
 public class Recipe {
 	
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "rezept_id")
 	private int rezept_id;
+	
+	@Column(name = "rezept_name")
 	private String rezept_name;
+	
+	@Column(name = "kochbuch")
 	private String kochbuch;
+	
+	@Column(name = "seite")
 	private int seite;
 	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "rezeptzutaten")
+	private List<Ingredient> ingredients = new ArrayList<>();
+	
+	
 	// getter and setter
-	public void setRecipeId(int rezept_id) {
-		this.rezept_id = rezept_id;
+	public void setIngredients(List<Ingredient> ingredients) {
+		this.ingredients = ingredients;
 	}
+	public List<Ingredient> getIngredients(){
+		return ingredients;
+	}
+	
+	public void addIngredient(Ingredient ingredient) {
+		this.ingredients.add(ingredient);
+	}
+	public void removeIngredient(Ingredient ingredient) {
+		this.ingredients.remove(ingredient);
+	}
+	
 	public int getRecipeId() {
 		return rezept_id;
 	}

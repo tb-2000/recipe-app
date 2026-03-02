@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS rezepte (
 );
 -- Create a table to store ingredients
 CREATE TABLE IF NOT EXISTS rezeptzutaten (
+  id SERIAL PRIMARY KEY, --Auto-incrementing ID
   rezept_id int, -- foreign key, refers to id of recipe
   FOREIGN KEY (rezept_id) REFERENCES rezepte(rezept_id),
   zutaten_menge int, -- number of ingredient units
