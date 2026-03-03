@@ -23,6 +23,19 @@ public class Recipe {
 	@Column(name = "seite")
 	private int seite;
 	
+	@Column(name = "beschreibung")
+	private String beschreibung;
+	
+	@Column(name = "cooktime")
+	private int cooktime;
+	
+	@Column(name = "preptime")
+	private int preptime;
+	
+	enum anspruch {leicht, mittel, schwer};
+	@Column(name = "anspruch")
+	private anspruch difficulty;
+	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "rezeptzutaten")
 	private List<Ingredient> ingredients = new ArrayList<>();
 	
@@ -65,5 +78,33 @@ public class Recipe {
 	}
 	public int getpage() {
 		return seite;
+	}
+	
+	public void setDescription(String beschreibung) {
+		this.beschreibung = beschreibung;
+	}
+	public String getDescription() {
+		return beschreibung;
+	}
+	
+	public void setCooktime(int cooktime) {
+		this.cooktime = cooktime;
+	}
+	public int getCooktime() {
+		return cooktime;
+	}
+	
+	public void setpreptime(int preptime) {
+		this.preptime = preptime;
+	}
+	public int getPreptime() {
+		return preptime;
+	}
+	
+	public void setDifficulty(anspruch difficulty) {
+		this.difficulty = difficulty;
+	}
+	public anspruch getDifficulty() {
+		return difficulty;
 	}
 }

@@ -1,9 +1,16 @@
+-- Create enum type for difficulty
+CREATE TYPE schwierigkeit as ENUM('leicht', 'mittel', 'schwer');
+
 -- Create a table to store recipes
 CREATE TABLE IF NOT EXISTS rezepte (
   rezept_id SERIAL PRIMARY KEY, -- Auto-incrementing ID
   rezept_name VARCHAR(100) NOT NULL, -- recipe name, required
   kochbuch VARCHAR(40), -- title of cooking book
-  seite int -- page where to find recipe
+  seite int, -- page where to find recipe
+  beschreibung VARCHAR(50000), --description for recipe
+  cooktime int, --cook time in minutes
+  preptime int, --preparation time in minutes
+  anspruch schwierigkeit --difficulty of recipe
 );
 -- Create a table to store ingredients
 CREATE TABLE IF NOT EXISTS rezeptzutaten (
