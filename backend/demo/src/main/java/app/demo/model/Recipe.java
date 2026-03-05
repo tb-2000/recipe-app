@@ -12,7 +12,7 @@ public class Recipe {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "rezept_id")
-	private int rezept_id;
+	private Long rezept_id;
 	
 	@Column(name = "rezept_name")
 	private String rezept_name;
@@ -32,11 +32,10 @@ public class Recipe {
 	@Column(name = "preptime")
 	private int preptime;
 	
-	enum anspruch {leicht, mittel, schwer};
 	@Column(name = "anspruch")
-	private anspruch difficulty;
+	private String difficulty;
 	
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "rezeptzutaten")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "recipe")
 	private List<Ingredient> ingredients = new ArrayList<>();
 	
 	
@@ -55,7 +54,7 @@ public class Recipe {
 		this.ingredients.remove(ingredient);
 	}
 	
-	public int getRecipeId() {
+	public Long getRecipeId() {
 		return rezept_id;
 	}
 	
@@ -101,10 +100,10 @@ public class Recipe {
 		return preptime;
 	}
 	
-	public void setDifficulty(anspruch difficulty) {
+	public void setDifficulty(String difficulty) {
 		this.difficulty = difficulty;
 	}
-	public anspruch getDifficulty() {
+	public String getDifficulty() {
 		return difficulty;
 	}
 }

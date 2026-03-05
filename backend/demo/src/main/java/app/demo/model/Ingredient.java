@@ -9,7 +9,7 @@ public class Ingredient {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
-	private int id;
+	private Long id;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "rezept_id", nullable = false)
@@ -25,7 +25,7 @@ public class Ingredient {
 	private String zutaten_name;
 	
 	// getter and setters
-	public int getId() {
+	public Long getId() {
 		return id;
 	}
 	public void setRecipe(Recipe recipe) {
