@@ -19,7 +19,7 @@ import jakarta.validation.Valid;
 import app.demo.model.*;
 
 @RestController
-@RequestMapping("/api/rezepte")
+@RequestMapping("/api")
 public class RecipeController {
 	
 	@Autowired
@@ -30,11 +30,16 @@ public class RecipeController {
     }
     
     @GetMapping
+    public String helloApi() {
+    	return "Welcome to api!";
+    }
+    
+    @GetMapping("/rezepte")
     public List<OverviewDto> getAll(){
     	return service.findAll();
     }
     
-    @GetMapping("/{id}")
+    @GetMapping("rezepte/{id}")
     public RecipeDetailDto getRecipe(@PathVariable Long id) {
     	return service.findById(id);
     }
@@ -45,13 +50,13 @@ public class RecipeController {
     	return service.create(dto);
     }
     
-    @PutMapping("/{id}")
+    @PutMapping("rezepte/{id}")
     @ResponseStatus(HttpStatus.OK)
     public RecipeDetailDto update(@PathVariable Long id, @Valid @RequestBody RecipeCreateDto dto) {
     	return service.update(id, dto);
     }
     
-    @DeleteMapping("/{id}")
+    @DeleteMapping("rezepte/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
     	service.delete(id);
