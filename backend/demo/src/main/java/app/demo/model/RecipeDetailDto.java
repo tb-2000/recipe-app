@@ -1,5 +1,6 @@
 package app.demo.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,7 +16,9 @@ public class RecipeDetailDto{
 	private int cooktime;
 	private int preptime;
 	private String difficulty;
-	private List<IngredientDto> ingredients;
+	private String anleitung;
+	private List<IngredientDto> ingredients = new ArrayList<>();
+	private List<String> categories = new ArrayList<>();
 	
 	// getter and setter
 		public Long getId() {
@@ -36,6 +39,19 @@ public class RecipeDetailDto{
 		}
 		public void removeIngredient(IngredientDto ingredient) {
 			this.ingredients.remove(ingredient);
+		}
+		public void setCategories(List<String> categories) {
+			this.categories = categories;
+		}
+		public List<String> getCategories(){
+			return categories;
+		}
+		
+		public void addCategory(String category) {
+			this.categories.add(category);
+		}
+		public void removeCategory(String categorie) {
+			this.categories.remove(categorie);
 		}
 		
 		public void setRecipeName(String title) {
@@ -85,5 +101,12 @@ public class RecipeDetailDto{
 		}
 		public String getDifficulty() {
 			return difficulty;
+		}
+		
+		public void setAnleitung(String anleitung) {
+			this.anleitung = anleitung;
+		}
+		public String getAnleitung() {
+			return anleitung;
 		}
 }

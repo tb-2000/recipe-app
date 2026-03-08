@@ -35,8 +35,14 @@ public class Recipe {
 	@Column(name = "anspruch")
 	private String difficulty;
 	
+	@Column(name = "anleitung")
+	private String anleitung;
+	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "recipe")
 	private List<Ingredient> ingredients = new ArrayList<>();
+	
+	@OneToMany(mappedBy = "recipe")
+	private List<RecipeCategories> categories = new ArrayList<>();
 	
 	
 	// getter and setter
@@ -52,6 +58,19 @@ public class Recipe {
 	}
 	public void removeIngredient(Ingredient ingredient) {
 		this.ingredients.remove(ingredient);
+	}
+	public void setCategories(List<RecipeCategories> categories) {
+		this.categories = categories;
+	}
+	public List<RecipeCategories> getCategories(){
+		return categories;
+	}
+	
+	public void addCategory(RecipeCategories category) {
+		this.categories.add(category);
+	}
+	public void removeCategory(RecipeCategories categorie) {
+		this.categories.remove(categorie);
 	}
 	
 	public Long getRecipeId() {
@@ -105,5 +124,12 @@ public class Recipe {
 	}
 	public String getDifficulty() {
 		return difficulty;
+	}
+	
+	public void setAnleitung(String anleitung) {
+		this.anleitung = anleitung;	
+	}
+	public String getAnleitung() {
+		return anleitung;
 	}
 }

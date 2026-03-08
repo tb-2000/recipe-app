@@ -11,8 +11,11 @@ public class Ingredient {
 	@Column(name = "id")
 	private Long id;
 	
+	@Column(name = "rezept_id")
+	private Long rezept_id;
+	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "rezept_id", nullable = false)
+	@JoinColumn(name = "recipe_id")
 	private Recipe recipe;
 	
 	@Column(name = "zutaten_menge")
@@ -27,6 +30,9 @@ public class Ingredient {
 	// getter and setters
 	public Long getId() {
 		return id;
+	}
+	public Long getRecipeId() {
+		return rezept_id;
 	}
 	public void setRecipe(Recipe recipe) {
 		this.recipe = recipe;

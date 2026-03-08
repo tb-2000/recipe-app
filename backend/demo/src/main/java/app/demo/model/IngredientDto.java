@@ -5,28 +5,28 @@ package app.demo.model;
  */
 public class IngredientDto{
 	
-	private int zutatenmenge;
-	private String zutatenname;
-	private String zutateneinheit;
+	private int menge;
+	private String name;
+	private String einheit;
 	
 	public void setMenge(int menge) {
-		this.zutatenmenge = menge;
+		this.menge = menge;
 	}
 	public int getMenge() {
-		return zutatenmenge;
+		return menge;
 	}
 	
 	public void setEinheit(String einheit) {
-		this.zutateneinheit = einheit;
+		this.einheit = einheit;
 	}
 	public String getEinheit() {
-		return zutateneinheit;
+		return einheit;
 	}
 	
 	public void setZutatenName(String name) {
-		this.zutatenname = name;
+		this.name = name;
 	}
 	public String getZutatenName() {
-		return zutatenname;
+		return name;
 	}
 }
