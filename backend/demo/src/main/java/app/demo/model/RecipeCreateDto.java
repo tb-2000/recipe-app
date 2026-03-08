@@ -1,5 +1,6 @@
 package app.demo.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.validation.constraints.NotBlank;
@@ -18,9 +19,12 @@ public class RecipeCreateDto{
 	private int cooktime;
 	private int preptime;
 	private String anspruch;
+	private String anleitung;
 	
 	@NotEmpty
 	private List<IngredientDto> ingredients;
+	
+	private List<String> categories = new ArrayList<>();
 	
 	public RecipeCreateDto(String title, List<IngredientDto> ingredients) {
 		this.title = title;
@@ -39,6 +43,19 @@ public class RecipeCreateDto{
 	}
 	public void removeIngredient(IngredientDto ingredient) {
 		this.ingredients.remove(ingredient);
+	}
+	public void setCategories(List<String> categories) {
+		this.categories = categories;
+	}
+	public List<String> getCategories(){
+		return categories;
+	}
+	
+	public void addCategory(String category) {
+		this.categories.add(category);
+	}
+	public void removeCategory(String categorie) {
+		this.categories.remove(categorie);
 	}
 	
 	public void setRecipeName(String title) {
@@ -87,5 +104,12 @@ public class RecipeCreateDto{
 	}
 	public String getDifficulty() {
 		return anspruch;
+	}
+	
+	public void setAnleitung(String anleitung) {
+		this.anleitung = anleitung;
+	}
+	public String getAnleitung() {
+		return anleitung;
 	}
 }

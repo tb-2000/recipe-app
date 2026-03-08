@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -45,6 +46,28 @@ public class RecipeController {
     @GetMapping("/rezepte/{id}")
     public RecipeDetailDto getRecipe(@PathVariable Long id) {
     	return service.findById(id);
+    }
+    
+    @GetMapping("/rezepte/search")
+    public List<OverviewDto> getRecipesBySearch(
+    		@RequestParam(required = false) String query,
+    		@RequestParam(required = false) List<String> categories
+    ){
+    	// hence query is blank -> must search by categories
+    	if(!query.isBlank()) {
+    		return service.findByCategories(categories);
+    	} 
+		// if no categories are given -> search by query
+		if(categories != null && !categories.isEmpty()) {
+    		return service.findBySearch(query);
+    	}
+		// assume that query and categories are given
+    	return null;
+    }
+    
+    @GetMapping("/rezepte/kategorien")
+    public List<String> getCategories(){
+    	return service.getAllCategories();
     }
     
     @PostMapping
