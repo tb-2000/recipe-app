@@ -13,13 +13,17 @@ public class RecipeCreateDto{
 	
 	@NotBlank
 	private String title;
-	private String kochbuch;
-	private int seite;
-	private String beschreibung;
+	private String cookbook;
+	private int page;
+	private String description;
 	private int cooktime;
 	private int preptime;
-	private String anspruch;
-	private String anleitung;
+	private String difficulty;
+	@NotBlank
+	private String instructions;
+	private String filename;
+	private String sasurl;
+	private String sasurlexpires;
 	
 	@NotEmpty
 	private List<IngredientDto> ingredients;
@@ -58,32 +62,32 @@ public class RecipeCreateDto{
 		this.categories.remove(categorie);
 	}
 	
-	public void setRecipeName(String title) {
+	public void setTitle(String title) {
 		this.title = title;
 	}
-	public String getRecipeName() {
+	public String getTitle() {
 		return title;
 	}
 	
 	public void setCookbook(String kochbuch) {
-		this.kochbuch = kochbuch;
+		this.cookbook = kochbuch;
 	}
 	public String getCookbook() {
-		return kochbuch;
+		return cookbook;
 	}
 	
 	public void setPage(int seite) {
-		this.seite = seite;
+		this.page = seite;
 	}
 	public int getpage() {
-		return seite;
+		return page;
 	}
 	
 	public void setDescription(String beschreibung) {
-		this.beschreibung = beschreibung;
+		this.description = beschreibung;
 	}
 	public String getDescription() {
-		return beschreibung;
+		return description;
 	}
 	
 	public void setCooktime(int cooktime) {
@@ -93,23 +97,45 @@ public class RecipeCreateDto{
 		return cooktime;
 	}
 	
-	public void setpreptime(int preptime) {
+	public void setPreptime(int preptime) {
 		this.preptime = preptime;
 	}
 	public int getPreptime() {
 		return preptime;
 	}
 	public void setDifficulty(String anspruch) {
-		this.anspruch = anspruch;
+		this.difficulty = anspruch;
 	}
 	public String getDifficulty() {
-		return anspruch;
+		return difficulty;
 	}
 	
-	public void setAnleitung(String anleitung) {
-		this.anleitung = anleitung;
+	public void setInstructions(String anleitung) {
+		this.instructions = anleitung;
 	}
-	public String getAnleitung() {
-		return anleitung;
+	public String getInstructions() {
+		return instructions;
+	}
+	public void setFilename(String file) {
+		this.filename = file;
+	}
+	public String getFilename() {
+		return filename;
+	}
+
+	public String getSasurl() {
+		return sasurl;
+	}
+
+	public void setSasurl(String sasurl) {
+		this.sasurl = sasurl;
+	}
+
+	public String getSasurlexpires() {
+		return sasurlexpires;
+	}
+
+	public void setSasurlexpires(String sasurlexpires) {
+		this.sasurlexpires = sasurlexpires;
 	}
 }

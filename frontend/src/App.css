@@ -17,14 +17,140 @@
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
+.cButton {
+  background-color: #e8e9f0;
+  color: rgb(0, 0, 0);
+  text-decoration: none;
+  cursor: pointer;
+}
+.cButton::selection {
+  background-color: #918a8aaa;
+  color: white;
+}
 
 .flex-container-categories {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  align-items: flex-start;
-  justify-content: flex-start;
-  gap: 2rem;
+  width: 600px;
+  height:auto;
+  background-color: inherit;
+  gap: 10px;
+}
+.flex-container-categories .cButton {
+  padding: 1rem;
+  border-radius: 0.5rem;
+  width: auto;
+  text-align: center;
+  font-size: 15px;
+}
+button:hover {
+  background-color: #9faca1;
+}
+.cButton.active {
+  background-color: #918a8aaa;
+}
+.cButton.active:hover {
+  background-color: #9faca1;
+}
+.recipe-link {
+  display: block;
+  text-decoration: none;
+}
+.form-group
+ {
+  display: grid;
+  grid-template-columns: 80px auto;
+  gap: 0.5rem;
+  width:600px;
+}
+.form-group input{
+  width: 100%;
+  padding: 0.5rem;
+}
+.ingredients-header {
+  display: grid;
+  grid-template-columns: 60px 60px 1fr 60px;
+}
+.form-group-ingredients {
+  display: 'flex';
+  flex-direction: column;
+  gap: 0.5rem;
+  width:600px;
+  max-width: 100%;
+}
+.ingredients-row {
+  display: grid;
+  width:600px;
+  grid-template-columns: 60px 60px 1fr 60px;
+  gap: 0.5rem;
+  align-items: center;
+}
+.ingredient-row button, input {
+  width:100%;
+  box-sizing: border-box;
+  padding: 0.5rem;
+}
+.ingredients-menge,
+.ingredients-einheit,
+.ingredients-zutat {
+  width: 100%;
+  box-sizing: border-box;     /* extrem wichtig */
+  padding: 0.5rem;
+}
+.DragDrop-Container {
+  display: flex;
+  flex-direction: column;
+  background-color: rgb(236, 230, 230);
+  border: 2px solid black;
+  width: inherit;
+  height: 300px;
+  align-items: center;
+  justify-content: center;
+}
+.DragDrop-Container p {
+  color:#888;
+  opacity: 0.7;
+}
+.pagination-container {
+  display:flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  list-style: none;
+  padding: 0;
+}
+.pagination-container li {
+  display: inline-block;
+  min-width: 30px;
+}
+.pagination-container a, button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 30px;
+}
+.pagination-container a:hover {
+  background-color: grey;
+  border-color: black;
+  color: white;
+}
+.pagination .selected a {
+  background-color: aqua;
+  color:white;
+
+}
+.pagination-container .disabled a{
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+body {
+  background-color: #f1b84c;
 }
 
 @keyframes logo-spin {

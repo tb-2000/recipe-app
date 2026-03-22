@@ -1,55 +1,38 @@
-import ReactPaginate from 'react-paginate'
+import { useQuery } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
 import api from '../api/api'
 import '../App.css'
 import RecipeImage from './RecipeImage'
-import { useEffect, useState } from 'react'
-import qs from 'qs'
 
 export default function OverviewRecipesPage({edit}:{edit:boolean}) {
-    const [currentPage, setCurrentPage] = useState(0)
-    const [pageCount, setPageCount] = useState(0)
-    const [rezepte, setRezepte] = useState([])
-    
     const navigate = useNavigate()
 
     const navigateToEdit = (id:Number) => {
         navigate(`/edit/rezepte/${id}`)
     }
 
-    const loadPage = async (page = 0) => {
-        const params: { [key: string]: any } = {}
-        params["page"] = page
-        params["size"] = 5
-        const response = await api.get('/rezepte', {
-            params,
-        paramsSerializer: params=> qs.stringify(params, {arrayFormat: 'repeat'})})
-        console.log("rezepte: ", response.data.content)
-        setRezepte(response.data.content)
-        setPageCount(response.data.totalPages)
-        setCurrentPage(response.data.number)
+    const fetchRecipes = async () => {
+        const response = await api.get('/rezepte')
+        return response.data
     }
-
-    const handleClick = (event: { selected: any }) => {
-        const newPage = event.selected
-        loadPage(newPage)
-    }
-    useEffect(() => {
-        loadPage(0)
-    }, [])
-
+    const { data, isLoading, error } = useQuery({
+        queryKey: ['rezepte'],
+        queryFn: fetchRecipes
+    })
     return (
         <div>
             <p>Here you can find an overview of all recipes currently available in the app:</p>
-            {rezepte && (
+            {isLoading && <p>Loading all recipes...</p>}
+            {error && <p>Error occurred while fetching all recipes. {error.message}</p>}
+            {data && (
                 <ul>
-                    {rezepte.map((rezept:any) => {
+                    {data.map((rezept:any) => {
                         return (
                             <>
                                 <a href={`/rezepte/${rezept.id}`} className="recipe-link">
                                     <ul key={rezept.id}>
                                         <strong>{rezept.title}</strong>
-                                        <RecipeImage rezept={rezept} />
+                                        <RecipeImage fileName={rezept.filename}/>
                                         <li>cooktime: {rezept.cooktime} minutes, prep time: {rezept.preptime} minutes, difficulty: {rezept.difficulty}</li>
                                         <li>beschreibung: {rezept.beschreibung}</li>
                                         <li>categories:</li>
@@ -64,14 +47,6 @@ export default function OverviewRecipesPage({edit}:{edit:boolean}) {
                             </>
                         )
                     })}
-                    {pageCount > 1 && (
-                                    <div>
-                                        <ReactPaginate previousLabel="Zurück" nextLabel="Weiter" 
-                                        breakLabel="..." pageCount={pageCount} marginPagesDisplayed={2}
-                                        pageRangeDisplayed={4} onPageChange={handleClick} forcePage={currentPage} 
-                                        containerClassName='pagination-container' activeClassName='selected'/>
-                                    </div>
-                                )}
                 </ul> 
                 
             )}

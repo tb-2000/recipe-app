@@ -2,6 +2,7 @@ package app.demo.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.net.URL;
 
 import jakarta.persistence.*;
 
@@ -12,19 +13,19 @@ public class Recipe {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "rezept_id")
-	private Long rezept_id;
+	private Long id;
 	
 	@Column(name = "rezept_name")
-	private String rezept_name;
+	private String title;
 	
 	@Column(name = "kochbuch")
-	private String kochbuch;
+	private String cookbook;
 	
 	@Column(name = "seite")
-	private int seite;
+	private int page;
 	
 	@Column(name = "beschreibung")
-	private String beschreibung;
+	private String description;
 	
 	@Column(name = "cooktime")
 	private int cooktime;
@@ -36,7 +37,10 @@ public class Recipe {
 	private String difficulty;
 	
 	@Column(name = "anleitung")
-	private String anleitung;
+	private String instructions;
+	
+	@Column(name = "fileName")
+	private String filename;
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "recipe")
 	private List<Ingredient> ingredients = new ArrayList<>();
@@ -73,36 +77,39 @@ public class Recipe {
 		this.categories.remove(categorie);
 	}
 	
-	public Long getRecipeId() {
-		return rezept_id;
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
 	}
 	
-	public void setRecipeName(String rezept_name) {
-		this.rezept_name = rezept_name;
+	public void setTitle(String rezept_name) {
+		this.title = rezept_name;
 	}
-	public String getRecipeName() {
-		return rezept_name;
+	public String getTitle() {
+		return title;
 	}
 	
 	public void setCookbook(String kochbuch) {
-		this.kochbuch = kochbuch;
+		this.cookbook = kochbuch;
 	}
 	public String getCookbook() {
-		return kochbuch;
+		return cookbook;
 	}
 	
 	public void setPage(int seite) {
-		this.seite = seite;
+		this.page = seite;
 	}
 	public int getpage() {
-		return seite;
+		return page;
 	}
 	
 	public void setDescription(String beschreibung) {
-		this.beschreibung = beschreibung;
+		this.description = beschreibung;
 	}
 	public String getDescription() {
-		return beschreibung;
+		return description;
 	}
 	
 	public void setCooktime(int cooktime) {
@@ -112,7 +119,7 @@ public class Recipe {
 		return cooktime;
 	}
 	
-	public void setpreptime(int preptime) {
+	public void setPreptime(int preptime) {
 		this.preptime = preptime;
 	}
 	public int getPreptime() {
@@ -126,10 +133,16 @@ public class Recipe {
 		return difficulty;
 	}
 	
-	public void setAnleitung(String anleitung) {
-		this.anleitung = anleitung;	
+	public void setInstructions(String anleitung) {
+		this.instructions = anleitung;	
 	}
 	public String getAnleitung() {
-		return anleitung;
+		return instructions;
+	}
+	public void setFilename(String imageUrl) {
+		this.filename = imageUrl;
+	}
+	public String getFilename() {
+		return filename;
 	}
 }

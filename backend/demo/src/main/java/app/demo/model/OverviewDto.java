@@ -13,9 +13,12 @@ public class OverviewDto{
 	private int cooktime;
 	private int preptime;
 	private String difficulty;
-	private String beschreibung;
+	private String description;
 	// Liste von nur den categorien namen, keine Ids etc...
 	private List<String> categories = new ArrayList<>();
+	private String filename;
+	private String sasurl;
+	private String sasurlexpires;
 	
     public Long getId() {
         return id;
@@ -47,11 +50,11 @@ public class OverviewDto{
 	public String getDifficulty() {
 	    return difficulty;
 	}
-	public void setDescription(String beschreibung) {
-		this.beschreibung = beschreibung;
+	public void setDescription(String description) {
+		this.description = description;
 	}
 	public String getDescription() {
-		return beschreibung;
+		return description;
 	}
 	public void setCategories(List<String> categories) {
 		this.categories = categories;
@@ -65,6 +68,24 @@ public class OverviewDto{
 	}
 	public void removeCategory(String categorie) {
 		this.categories.remove(categorie);
+	}
+	public void setFilename(String file) {
+		this.filename = file;
+	}
+	public String getFilename() {
+		return filename;
+	}
+	public String getSasurl() {
+		return sasurl;
+	}
+	public void setSasurl(String sasurl) {
+		this.sasurl = sasurl;
+	}
+	public String getSasurlexpires() {
+		return sasurlexpires;
+	}
+	public void setSasurlexpires(String sasurlexpires) {
+		this.sasurlexpires = sasurlexpires;
 	}
 
 }

@@ -10,15 +10,18 @@ public class RecipeDetailDto{
 	
 	private Long id;
 	private String title;
-	private String beschreibung;
-	private String kochbuch;
-	private int seite;
+	private String description;
+	private String cookbook;
+	private int page;
 	private int cooktime;
 	private int preptime;
 	private String difficulty;
-	private String anleitung;
+	private String instructions;
 	private List<IngredientDto> ingredients = new ArrayList<>();
 	private List<String> categories = new ArrayList<>();
+	private String filename;
+	private String sasurl;
+	private String sasurlexpires;
 	
 	// getter and setter
 		public Long getId() {
@@ -50,36 +53,36 @@ public class RecipeDetailDto{
 		public void addCategory(String category) {
 			this.categories.add(category);
 		}
-		public void removeCategory(String categorie) {
-			this.categories.remove(categorie);
+		public void removeCategory(String category) {
+			this.categories.remove(category);
 		}
 		
-		public void setRecipeName(String title) {
+		public void setTitle(String title) {
 			this.title = title;
 		}
-		public String getRecipeName() {
+		public String getTitle() {
 			return title;
 		}
 		
-		public void setCookbook(String kochbuch) {
-			this.kochbuch = kochbuch;
+		public void setCookbook(String cookbook) {
+			this.cookbook = cookbook;
 		}
 		public String getCookbook() {
-			return kochbuch;
+			return cookbook;
 		}
 		
-		public void setPage(int seite) {
-			this.seite = seite;
+		public void setPage(int page) {
+			this.page = page;
 		}
-		public int getpage() {
-			return seite;
+		public int getPage() {
+			return page;
 		}
 		
-		public void setDescription(String beschreibung) {
-			this.beschreibung = beschreibung;
+		public void setDescription(String description) {
+			this.description = description;
 		}
 		public String getDescription() {
-			return beschreibung;
+			return description;
 		}
 		
 		public void setCooktime(int cooktime) {
@@ -89,7 +92,7 @@ public class RecipeDetailDto{
 			return cooktime;
 		}
 		
-		public void setpreptime(int preptime) {
+		public void setPreptime(int preptime) {
 			this.preptime = preptime;
 		}
 		public int getPreptime() {
@@ -103,10 +106,28 @@ public class RecipeDetailDto{
 			return difficulty;
 		}
 		
-		public void setAnleitung(String anleitung) {
-			this.anleitung = anleitung;
+		public void setInstructions(String instructions) {
+			this.instructions = instructions;
 		}
-		public String getAnleitung() {
-			return anleitung;
+		public String getInstructions() {
+			return instructions;
+		}
+		public void setFilename(String file) {
+			this.filename = file;
+		}
+		public String getFilename() {
+			return filename;
+		}
+		public String getSasurl() {
+			return sasurl;
+		}
+		public void setSasurl(String sasurl) {
+			this.sasurl = sasurl;
+		}
+		public String getSasurlexpires() {
+			return sasurlexpires;
+		}
+		public void setSasurlexpires(String sasurlexpires) {
+			this.sasurlexpires = sasurlexpires;
 		}
 }

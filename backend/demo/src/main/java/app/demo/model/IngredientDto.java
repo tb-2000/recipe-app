@@ -23,10 +23,10 @@ public class IngredientDto{
 		return einheit;
 	}
 	
-	public void setZutatenName(String name) {
+	public void setName(String name) {
 		this.name = name;
 	}
-	public String getZutatenName() {
+	public String getName() {
 		return name;
 	}
 }

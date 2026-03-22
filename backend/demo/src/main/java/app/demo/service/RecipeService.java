@@ -1,10 +1,24 @@
 package app.demo.service;
 
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.*;
+
+import com.azure.storage.blob.BlobClient;
+import com.azure.storage.blob.BlobContainerClient;
+import com.azure.storage.blob.BlobServiceClient;
+import com.azure.storage.blob.BlobServiceClientBuilder;
+import com.azure.storage.blob.models.UserDelegationKey;
+import com.azure.storage.blob.sas.BlobSasPermission;
+import com.azure.storage.blob.sas.BlobServiceSasSignatureValues;
 
 import app.demo.model.Category;
 import app.demo.model.Ingredient;
@@ -17,6 +31,8 @@ import app.demo.model.RecipeDetailDto;
 import app.demo.repository.RecipeRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.*;
+
+import app.demo.config.config;;
 
 /**
  * Service class for business logic and advanced database access logic
@@ -44,7 +60,9 @@ public class RecipeService{
 	@Transactional
 	public RecipeDetailDto findById(Long id) {
 		Recipe recipe = rep.findByIdwithIngredients(id);
-		return toDetailDto(recipe);
+	    BlobSasPermission permission = new BlobSasPermission()
+	            .setReadPermission(true);
+		return toDetailDto(recipe, permission);
 	}
 	
 	/**
@@ -52,10 +70,11 @@ public class RecipeService{
 	 * @return List of OverviewDto
 	 */
 	@Transactional
-	public List<OverviewDto> findAll(){
-		List<OverviewDto> overviews = new ArrayList<>();
-		List<Recipe> recipes = rep.findAll();
-		return toOverviewDtos(recipes);
+	public Page<OverviewDto> findAll(Pageable pageable){
+		Page<Recipe> recipes = rep.findAll(pageable);
+	    BlobSasPermission permission = new BlobSasPermission()
+	            .setReadPermission(true);
+		return toOverviewDtos(recipes, permission);
 	}
 	
 	/**
@@ -64,10 +83,11 @@ public class RecipeService{
 	 * @return OverviewDTOs of all recipes with category tags
 	 */
 	@Transactional
-	public List<OverviewDto> findByCategories(List<String> categories){
-		List<OverviewDto> overviews = new ArrayList<>();
-		List<Recipe> recipes = rep.findByCategories(categories);
-		return toOverviewDtos(recipes);
+	public Page<OverviewDto> findByCategories(List<String> categories, int categoriesCount, Pageable pageable){
+		Page<Recipe> recipes = rep.findByCategories(categories, categoriesCount, pageable);
+	    BlobSasPermission permission = new BlobSasPermission()
+	            .setReadPermission(true);
+		return toOverviewDtos(recipes, permission);
 	}
 	
 	/**
@@ -76,10 +96,11 @@ public class RecipeService{
 	 * @return list of overviewDTOs of recipes
 	 */
 	@Transactional
-	public List<OverviewDto> findBySearch(String query){
-		List<OverviewDto> overviews = new ArrayList<>();
-		List<Recipe> recipes = rep.findBySearch(query);
-		return toOverviewDtos(recipes);
+	public Page<OverviewDto> findBySearch(String query, Pageable pageable){
+		Page<Recipe> recipes = rep.findBySearch(query, pageable);
+	    BlobSasPermission permission = new BlobSasPermission()
+	            .setReadPermission(true);
+		return toOverviewDtos(recipes, permission);
 	}
 	
 	/**
@@ -89,10 +110,79 @@ public class RecipeService{
 	 * @return list of overviewDTOs from recipes
 	 */
 	@Transactional
-	public List<OverviewDto> findBySearchAndCategories(String query, List<String> categories){
-		List<OverviewDto> overviews = new ArrayList<>();
-		List<Recipe> recipes = rep.findBySearchAndCategories(query, categories);
-		return toOverviewDtos(recipes);
+	public Page<OverviewDto> findBySearchAndCategories(String query, List<String> categories, int categoriesCount, Pageable pageable){
+		Page<Recipe> recipes = rep.findBySearchAndCategories(query, categories, categoriesCount, pageable);
+	    BlobSasPermission permission = new BlobSasPermission()
+	            .setReadPermission(true);
+		return toOverviewDtos(recipes, permission);
+	}
+	
+	@Transactional
+	public List<String> createUploadSas(String fileName) {
+		
+		config Config = new config();
+		String connectionString = Config.connectionstring;
+	    String blobName = UUID.randomUUID() + "-" + fileName;
+
+	    BlobServiceClient blobServiceClient = new BlobServiceClientBuilder()
+	            .connectionString(connectionString) // oder mit Managed Identity / Entra ID
+	            .buildClient();
+
+	    BlobContainerClient container = blobServiceClient.getBlobContainerClient("rezepte-bilder");
+
+	    BlobClient blobClient = container.getBlobClient(blobName);
+
+	    BlobSasPermission permission = new BlobSasPermission()
+	            .setWritePermission(true)
+	            .setCreatePermission(true);
+
+	    BlobServiceSasSignatureValues sasValues = new BlobServiceSasSignatureValues(
+	            OffsetDateTime.now().plusMinutes(15), permission);
+
+	    String sasToken = blobClient.generateSas(sasValues);
+
+	    String sasUrl = blobClient.getBlobUrl() + "?" + sasToken;
+	    
+	    String sasurlexpires = OffsetDateTime.now(ZoneOffset.UTC).plusHours(24).format(DateTimeFormatter.ISO_INSTANT);
+	    List<String> sas = new ArrayList<>();
+	    
+	    sas.add(sasUrl);
+	    sas.add(sasurlexpires);
+
+	    return sas;
+	}
+	
+	@Transactional
+	public List<String> createFetchSas(String fileName) {
+		config Config = new config();
+		String connectionString = Config.connectionstring;
+	    String blob = fileName;
+
+	    BlobServiceClient blobServiceClient = new BlobServiceClientBuilder()
+	            .connectionString(connectionString) // oder mit Managed Identity / Entra ID
+	            .buildClient();
+
+	    BlobContainerClient container = blobServiceClient.getBlobContainerClient("rezepte-bilder");
+
+	    BlobClient blobClient = container.getBlobClient(blob);
+
+	    BlobSasPermission permission = new BlobSasPermission()
+	            .setReadPermission(true);
+
+	    BlobServiceSasSignatureValues sasValues = new BlobServiceSasSignatureValues(
+	            OffsetDateTime.now().plusHours(24), permission);
+
+	    String sasToken = blobClient.generateSas(sasValues);
+
+	    String sasUrl = blobClient.getBlobUrl() + "?" + sasToken;
+	    
+	    String sasurlexpires = OffsetDateTime.now(ZoneOffset.UTC).plusHours(24).format(DateTimeFormatter.ISO_INSTANT);
+	    List<String> sas = new ArrayList<>();
+	    
+	    sas.add(sasUrl);
+	    sas.add(sasurlexpires);
+
+	    return sas;
 	}
 	
 	/**
@@ -104,13 +194,20 @@ public class RecipeService{
 	public RecipeDetailDto create(RecipeCreateDto createdto) {
 		
 		Recipe recipe = new Recipe();
-		recipe.setRecipeName(createdto.getRecipeName());
+		
+//		//find next possible id 
+//		Long id = rep.findNextId();
+//		recipe.setId(id);
+		
+		recipe.setTitle(createdto.getTitle());
 		recipe.setCookbook(createdto.getCookbook());
 		recipe.setPage(createdto.getpage());
 		recipe.setDescription(createdto.getDescription());
 		recipe.setCooktime(createdto.getCooktime());
-		recipe.setpreptime(createdto.getPreptime());
+		recipe.setPreptime(createdto.getPreptime());
 		recipe.setDifficulty(createdto.getDifficulty());
+		recipe.setInstructions(createdto.getInstructions());
+		recipe.setFilename(createdto.getFilename());
 		
 		for(String name : createdto.getCategories()) {
 			RecipeCategories rc = new RecipeCategories();
@@ -125,12 +222,16 @@ public class RecipeService{
 			Ingredient ingredient = new Ingredient();
 			ingredient.setEinheit(i.getEinheit());
 			ingredient.setMenge(i.getMenge());
-			ingredient.setZutatenName(i.getZutatenName());
+			ingredient.setName(i.getName());
 			recipe.addIngredient(ingredient);
 		}
 		
+	    BlobSasPermission permission = new BlobSasPermission()
+	            .setWritePermission(true)
+	            .setCreatePermission(true);
+		
 		Recipe saved = rep.save(recipe);
-		return toDetailDto(saved);
+		return toDetailDto(saved, permission);
 	}
 	
 	/**
@@ -147,13 +248,15 @@ public class RecipeService{
 		Recipe recipe = rep.findByIdwithIngredients(id);
 		
 		//update properties of recipe
-		recipe.setRecipeName(dto.getRecipeName());
+		recipe.setTitle(dto.getTitle());
 		recipe.setCookbook(dto.getCookbook());
 		recipe.setPage(dto.getpage());
 		recipe.setDescription(dto.getDescription());
 		recipe.setCooktime(dto.getCooktime());
-		recipe.setpreptime(dto.getPreptime());
+		recipe.setPreptime(dto.getPreptime());
 		recipe.setDifficulty(dto.getDifficulty());
+		recipe.setInstructions(dto.getInstructions());
+		recipe.setFilename(dto.getFilename());
 		
 		//clear all ingredients
 		recipe.getIngredients().clear();
@@ -164,7 +267,7 @@ public class RecipeService{
 			Ingredient ingredient = new Ingredient();
 			ingredient.setEinheit(i.getEinheit());
 			ingredient.setMenge(i.getMenge());
-			ingredient.setZutatenName(i.getZutatenName());
+			ingredient.setName(i.getName());
 			
 			recipe.addIngredient(ingredient);
 		}
@@ -172,7 +275,11 @@ public class RecipeService{
 		//save new recipe
 		rep.save(recipe);
 		
-		return toDetailDto(recipe);
+	    BlobSasPermission permission = new BlobSasPermission()
+	            .setWritePermission(true)
+	            .setCreatePermission(true);
+		
+		return toDetailDto(recipe, permission);
 		
 	}
 	
@@ -188,23 +295,55 @@ public class RecipeService{
 		rep.deleteById(id);
 	}
 	
+	public String createSas(String fileName, BlobSasPermission permission) {
+		config Config = new config();
+		String connectionString = Config.connectionstring;
+	    String blob = fileName;
+
+	    BlobServiceClient blobServiceClient = new BlobServiceClientBuilder()
+	            .connectionString(connectionString) // oder mit Managed Identity / Entra ID
+	            .buildClient();
+
+	    BlobContainerClient container = blobServiceClient.getBlobContainerClient("rezepte-bilder");
+
+	    BlobClient blobClient = container.getBlobClient(blob);
+
+	    BlobServiceSasSignatureValues sasValues = new BlobServiceSasSignatureValues(
+	            OffsetDateTime.now().plusHours(24), permission);
+
+	    String sasToken = blobClient.generateSas(sasValues);
+
+	    String sasUrl = blobClient.getBlobUrl() + "?" + sasToken;
+
+	    return sasUrl;
+	}
+	
 	/**
 	 * changes Recipe type to RecipeDetailDto type
 	 * @param Recipe
 	 * @return RecipeDetailDto
 	 */
-	public RecipeDetailDto toDetailDto(Recipe recipe) {
+	public RecipeDetailDto toDetailDto(Recipe recipe, BlobSasPermission permission) {
 		
 		RecipeDetailDto detaildto = new RecipeDetailDto();
 		
-		detaildto.setId(recipe.getRecipeId());
-		detaildto.setRecipeName(recipe.getRecipeName());
+		detaildto.setId(recipe.getId());
+		detaildto.setTitle(recipe.getTitle());
 		detaildto.setDescription(recipe.getDescription());
 		detaildto.setCookbook(recipe.getCookbook());
 		detaildto.setPage(recipe.getpage());
 		detaildto.setCooktime(recipe.getCooktime());
-		detaildto.setpreptime(recipe.getPreptime());
+		detaildto.setPreptime(recipe.getPreptime());
 		detaildto.setDifficulty(recipe.getDifficulty());
+		detaildto.setInstructions(recipe.getAnleitung());
+		detaildto.setFilename(recipe.getFilename());
+		
+		if(detaildto.getFilename() != null) {
+			detaildto.setSasurl(createSas(detaildto.getFilename(), permission));
+			detaildto.setSasurlexpires(OffsetDateTime.now(ZoneOffset.UTC).plusHours(24).format(DateTimeFormatter.ISO_INSTANT));
+		}
+		
+		detaildto.setCategories((List<String>) recipe.getCategories().stream().map(rc -> rc.category.getName()).toList());
 		
 		for(Ingredient i : recipe.getIngredients()) {
 			
@@ -212,7 +351,7 @@ public class RecipeService{
 			
 			ingredient.setEinheit(i.getEinheit());
 			ingredient.setMenge(i.getMenge());
-			ingredient.setZutatenName(i.getZutatenName());
+			ingredient.setName(i.getName());
 			
 			detaildto.addIngredient(ingredient);
 		}
@@ -224,20 +363,46 @@ public class RecipeService{
 	 * @param recipes
 	 * @return overviews
 	 */
-	public List<OverviewDto> toOverviewDtos(List<Recipe> recipes){
-		List<OverviewDto> overviews = new ArrayList<>();
-		for(Recipe recipe : recipes) {
-			OverviewDto overviewdto = new OverviewDto();
-			overviewdto.setId(recipe.getRecipeId());
-			overviewdto.setTitle(recipe.getRecipeName());
-			overviewdto.setCooktime(recipe.getCooktime());
-			overviewdto.setPreptime(recipe.getPreptime());
-			overviewdto.setDifficulty( recipe.getDifficulty());
-			overviewdto.setDescription(recipe.getDescription());
-			
-			overviewdto.setCategories((List<String>) recipe.getCategories().stream().map(rc -> rc.category.getName()).toList());
-			overviews.add(overviewdto);
-		}
+	public Page<OverviewDto> toOverviewDtos(Page<Recipe> recipes, BlobSasPermission permission){
+//		List<OverviewDto> overviews = new ArrayList<>();
+//		for(Recipe recipe : recipes) {
+//			OverviewDto overviewdto = new OverviewDto();
+//			overviewdto.setId(recipe.getId());
+//			overviewdto.setTitle(recipe.getTitle());
+//			overviewdto.setCooktime(recipe.getCooktime());
+//			overviewdto.setPreptime(recipe.getPreptime());
+//			overviewdto.setDifficulty( recipe.getDifficulty());
+//			overviewdto.setDescription(recipe.getDescription());
+//			overviewdto.setFilename(recipe.getFilename());
+//			
+//			overviewdto.setCategories((List<String>) recipe.getCategories().stream().map(rc -> rc.category.getName()).toList());
+//			overviews.add(overviewdto);
+//		}
+		Page<OverviewDto> overviews = recipes.map(recipe->toOverviewDto(recipe, permission));
 		return overviews;
+	}
+	
+	/**
+	 * converts Recipe entity to OverviewDto class
+	 * @param recipe
+	 * @return overviewdto
+	 */
+	public OverviewDto toOverviewDto(Recipe recipe, BlobSasPermission permission) {
+		OverviewDto overviewdto = new OverviewDto();
+		overviewdto.setId(recipe.getId());
+		overviewdto.setTitle(recipe.getTitle());
+		overviewdto.setCooktime(recipe.getCooktime());
+		overviewdto.setPreptime(recipe.getPreptime());
+		overviewdto.setDifficulty( recipe.getDifficulty());
+		overviewdto.setDescription(recipe.getDescription());
+		overviewdto.setFilename(recipe.getFilename());
+		
+		if(overviewdto.getFilename() != null) {
+			overviewdto.setSasurl(createSas(overviewdto.getFilename(), permission));
+			overviewdto.setSasurlexpires(OffsetDateTime.now(ZoneOffset.UTC).plusHours(24).format(DateTimeFormatter.ISO_INSTANT));
+		}
+		
+		overviewdto.setCategories((List<String>) recipe.getCategories().stream().map(rc -> rc.category.getName()).toList());
+		return overviewdto;
 	}
 }

@@ -3,6 +3,8 @@ package app.demo.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -23,7 +25,7 @@ import app.demo.model.*;
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(
-		origins = "http://localhost:5174")
+		origins = {"http://localhost:5174", "http://localhost:5173"})
 public class RecipeController {
 	
 	@Autowired
@@ -39,8 +41,11 @@ public class RecipeController {
 //    }
     
     @GetMapping("/rezepte")
-    public List<OverviewDto> getAll(){
-    	return service.findAll();
+    public Page<OverviewDto> getAll(
+    	@RequestParam(defaultValue="0") int page,
+    	@RequestParam(defaultValue="5") int size){
+    	PageRequest pageable = PageRequest.of(page,  size);
+    	return service.findAll(pageable);
     }
     
     @GetMapping("/rezepte/{id}")
@@ -49,20 +54,31 @@ public class RecipeController {
     }
     
     @GetMapping("/rezepte/search")
-    public List<OverviewDto> getRecipesBySearch(
-    		@RequestParam(required = false) String query,
-    		@RequestParam(required = false) List<String> categories
+    public Page<OverviewDto> getRecipesBySearch(
+    		@RequestParam(required = false) String query, //Achtung! wenn kein Query gesendet, wird query=null
+    		@RequestParam(required = false) List<String> categories,
+        	@RequestParam(defaultValue="0") int page,
+        	@RequestParam(defaultValue="5") int size
     ){
+    	boolean hasQuery = query != null && !query.isBlank();
+    	boolean hasCategories = categories != null && !categories.isEmpty();
+    	PageRequest pageable = PageRequest.of(page,  size);
+    	
     	// hence query is blank -> must search by categories
-    	if(!query.isBlank()) {
-    		return service.findByCategories(categories);
+    	if(!hasQuery && hasCategories) {
+    		int categoriesCount = categories.size();
+    		return service.findByCategories(categories, categoriesCount, pageable);
     	} 
 		// if no categories are given -> search by query
-		if(categories != null && !categories.isEmpty()) {
-    		return service.findBySearch(query);
+		if(hasQuery && !hasCategories) {
+    		return service.findBySearch(query, pageable);
     	}
 		// assume that query and categories are given
-    	return null;
+		if(hasQuery && hasCategories) {
+			int categoriesCount = categories.size();
+			return service.findBySearchAndCategories(query, categories, categoriesCount, pageable);
+		}
+    	return service.findAll(pageable);
     }
     
     @GetMapping("/rezepte/kategorien")
@@ -70,19 +86,35 @@ public class RecipeController {
     	return service.getAllCategories();
     }
     
-    @PostMapping
+    /*
+     * returns the SAS-Token to upload image in azure container
+     */
+    @GetMapping("/upload-sas")
+    public List<String> getUploadSas(
+    		@RequestParam String fileName) {
+    	return service.createUploadSas(fileName);
+    }
+    
+    @GetMapping("/fetch-sas")
+    public List<String> getFetchSas(@RequestParam String fileName) {
+    	return service.createFetchSas(fileName);
+    }
+    
+    @PostMapping("/submit")
     @ResponseStatus(HttpStatus.CREATED)
     public RecipeDetailDto create(@Valid @RequestBody RecipeCreateDto dto) {
+        System.out.println("Received DTO raw: " + dto);
+        System.out.println("instructions = " + dto.getInstructions());
     	return service.create(dto);
     }
     
-    @PutMapping("/rezepte/{id}")
+    @PutMapping("/edit/rezepte/{id}")
     @ResponseStatus(HttpStatus.OK)
     public RecipeDetailDto update(@PathVariable Long id, @Valid @RequestBody RecipeCreateDto dto) {
     	return service.update(id, dto);
     }
     
-    @DeleteMapping("/rezepte/{id}")
+    @DeleteMapping("/edit/rezepte/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
     	service.delete(id);

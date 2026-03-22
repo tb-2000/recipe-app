@@ -12,27 +12,27 @@ public class Ingredient {
 	private Long id;
 	
 	@Column(name = "rezept_id")
-	private Long rezept_id;
+	private Long recipe_id;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "recipe_id")
 	private Recipe recipe;
 	
 	@Column(name = "zutaten_menge")
-	private int zutaten_menge;
+	private int menge;
 	
 	@Column(name = "zutaten_einheit")
-	private String zutaten_einheit;
+	private String einheit;
 	
 	@Column(name = "zutaten_name")
-	private String zutaten_name;
+	private String name;
 	
 	// getter and setters
 	public Long getId() {
 		return id;
 	}
 	public Long getRecipeId() {
-		return rezept_id;
+		return recipe_id;
 	}
 	public void setRecipe(Recipe recipe) {
 		this.recipe = recipe;
@@ -42,23 +42,23 @@ public class Ingredient {
 	}
 	
 	public void setMenge(int menge) {
-		this.zutaten_menge = menge;
+		this.menge = menge;
 	}
 	public int getMenge() {
-		return zutaten_menge;
+		return menge;
 	}
 	
 	public void setEinheit(String einheit) {
-		this.zutaten_einheit = einheit;
+		this.einheit = einheit;
 	}
 	public String getEinheit() {
-		return zutaten_einheit;
+		return einheit;
 	}
 	
-	public void setZutatenName(String name) {
-		this.zutaten_name = name;
+	public void setName(String name) {
+		this.name = name;
 	}
-	public String getZutatenName() {
-		return zutaten_name;
+	public String getName() {
+		return name;
 	}
 }
