@@ -76,6 +76,19 @@ public class RecipeService{
 	            .setReadPermission(true);
 		return toOverviewDtos(recipes, permission);
 	}
+
+	/**
+	 * find recipes by ids
+	 * @param ids of recipes
+	 * @return OverviewDtos of recipes
+	 */
+	@Transactional
+	public Page<OverviewDto> findByIds(List<Long> ids, Pageable pageable){
+		Page<Recipe> recipes = rep.findByIds(ids, pageable);
+		BlobSasPermission permission = new BlobSasPermission()
+				.setReadPermission(true);
+		return toOverviewDtos(recipes, permission);
+	}
 	
 	/**
 	 * find all recipes by their category/categories

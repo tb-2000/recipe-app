@@ -52,6 +52,16 @@ public class RecipeController {
     public RecipeDetailDto getRecipe(@PathVariable Long id) {
     	return service.findById(id);
     }
+
+    @GetMapping("/rezepte/search/ids")
+    public Page<OverviewDto> getRecipesByIds(
+        @RequestParam(defaultValue="1,2,3,4,5,6") List<Long> ids,
+        @RequestParam(defaultValue="0") int page,
+        @RequestParam(defaultValue="3") int size
+    ){
+        PageRequest pageable = PageRequest.of(page,  size);
+        return service.findByIds(ids, pageable);
+    }
     
     @GetMapping("/rezepte/search")
     public Page<OverviewDto> getRecipesBySearch(
