@@ -84,7 +84,7 @@ public class RecipeService{
 	 */
 	@Transactional
 	public Page<OverviewDto> findByIds(List<Long> ids, Pageable pageable){
-		Page<Recipe> recipes = rep.findByIds(ids, pageable);
+		Page<Recipe> recipes = rep.findByIdIn(ids, pageable);
 		BlobSasPermission permission = new BlobSasPermission()
 				.setReadPermission(true);
 		return toOverviewDtos(recipes, permission);
