@@ -131,42 +131,54 @@ public class RecipeService{
 	}
 	
 	@Transactional
-	public List<String> createUploadSas(String fileName) {
-		
-		config Config = new config();
-		String connectionString = Config.connectionstring;
-	    String blobName = UUID.randomUUID() + "-" + fileName;
+	public List<String> createUploadSas(String originalFileName) {
+    
+		Config config = new Config();
+		String connectionString = config.connectionstring;
 
-	    BlobServiceClient blobServiceClient = new BlobServiceClientBuilder()
-	            .connectionString(connectionString) // oder mit Managed Identity / Entra ID
-	            .buildClient();
+		String blobName = UUID.randomUUID() + "-" + originalFileName;
 
-	    BlobContainerClient container = blobServiceClient.getBlobContainerClient("rezepte-bilder");
+		BlobServiceClient blobServiceClient = new BlobServiceClientBuilder()
+				.connectionString(connectionString)
+				.buildClient();
 
-	    BlobClient blobClient = container.getBlobClient(blobName);
+		BlobContainerClient containerClient = blobServiceClient.getBlobContainerClient("rezepte-bilder");
+		BlobClient blobClient = containerClient.getBlobClient(blobName);
 
-	    BlobSasPermission permission = new BlobSasPermission()
-	            .setWritePermission(true)
-	            .setCreatePermission(true)
-				.setAddPermission(true)
-            	.setReadPermission(true);
+		// User Delegation Key holen (das ist der wichtige Teil)
+		UserDelegationKey userDelegationKey = blobServiceClient.getUserDelegationKey(
+				OffsetDateTime.now().minusMinutes(5),
+				OffsetDateTime.now().plusHours(1)
+		);
 
-	    BlobServiceSasSignatureValues sasValues = new BlobServiceSasSignatureValues(
-	            OffsetDateTime.now().plusMinutes(30), permission)
+		// Permissions
+		BlobSasPermission permissions = new BlobSasPermission()
+				.setReadPermission(true)
+				.setWritePermission(true)
+				.setCreatePermission(true)
+				.setAddPermission(true);
+
+		// User Delegation SAS erstellen
+		BlobServiceSasSignatureValues sasValues = new BlobServiceSasSignatureValues(
+				OffsetDateTime.now().plusMinutes(45), 
+				permissions)
 				.setStartTime(OffsetDateTime.now().minusMinutes(5));
 
-	    String sasToken = blobClient.generateSas(sasValues);
+		String sasToken = blobClient.generateUserDelegationSas(sasValues, userDelegationKey);
 
-	    String sasUrl = blobClient.getBlobUrl() + "?" + sasToken;
-	    
-	    String sasurlexpires = OffsetDateTime.now(ZoneOffset.UTC).plusHours(24).format(DateTimeFormatter.ISO_INSTANT);
-	    List<String> sas = new ArrayList<>();
-	    
-	    sas.add(sasUrl);
-	    sas.add(sasurlexpires);
+		String sasUrl = blobClient.getBlobUrl() + "?" + sasToken;
 
-	    return sas;
-	}
+		String expires = OffsetDateTime.now(ZoneOffset.UTC)
+				.plusHours(24)
+				.format(DateTimeFormatter.ISO_INSTANT);
+
+		List<String> result = new ArrayList<>();
+		result.add(sasUrl);
+		result.add(expires);
+
+		System.out.println("User Delegation SAS generiert für Blob: " + blobName);
+		return result;
+}
 	
 	@Transactional
 	public List<String> createFetchSas(String fileName) {
