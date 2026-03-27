@@ -32,7 +32,7 @@ import app.demo.repository.RecipeRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.*;
 
-import app.demo.config.config;;
+import app.demo.config.config;
 
 /**
  * Service class for business logic and advanced database access logic
@@ -133,7 +133,7 @@ public class RecipeService{
 	@Transactional
 	public List<String> createUploadSas(String originalFileName) {
     
-		Config config = new Config();
+		Config config = new config();
 		String connectionString = config.connectionstring;
 
 		String blobName = UUID.randomUUID() + "-" + originalFileName;
