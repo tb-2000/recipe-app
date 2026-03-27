@@ -24,7 +24,7 @@ public class Recipe {
 	@Column(name = "seite")
 	private int page;
 	
-	@Column(name = "beschreibung")
+	@Column(name = "beschreibung", columnDefinition="TEXT")
 	private String description;
 	
 	@Column(name = "cooktime")
@@ -36,7 +36,7 @@ public class Recipe {
 	@Column(name = "anspruch")
 	private String difficulty;
 	
-	@Column(name = "anleitung")
+	@Column(name = "anleitung", columnDefinition="TEXT")
 	private String instructions;
 	
 	@Column(name = "fileName")
