@@ -145,18 +145,13 @@ public class RecipeService{
 		BlobContainerClient containerClient = blobServiceClient.getBlobContainerClient("rezepte-bilder");
 		BlobClient blobClient = containerClient.getBlobClient(blobName);
 
-		// User Delegation Key holen (das ist der wichtige Teil)
-		UserDelegationKey userDelegationKey = blobServiceClient.getUserDelegationKey(
-				OffsetDateTime.now().minusMinutes(5),
-				OffsetDateTime.now().plusHours(1)
-		);
-
 		// Permissions
 		BlobSasPermission permissions = new BlobSasPermission()
 				.setReadPermission(true)
 				.setWritePermission(true)
 				.setCreatePermission(true)
-				.setAddPermission(true);
+				.setAddPermission(true)
+				.setDeletePermission(true);
 
 		// User Delegation SAS erstellen
 		BlobServiceSasSignatureValues sasValues = new BlobServiceSasSignatureValues(
@@ -164,9 +159,9 @@ public class RecipeService{
 				permissions)
 				.setStartTime(OffsetDateTime.now().minusMinutes(5));
 
-		String sasToken = blobClient.generateUserDelegationSas(sasValues, userDelegationKey);
+		String sasToken = blobClient.generateSas(sasValues);
 
-		String sasUrl = blobClient.getBlobUrl() + "?" + sasToken;
+    	String sasUrl = blobClient.getBlobUrl() + "?" + sasToken;
 
 		String expires = OffsetDateTime.now(ZoneOffset.UTC)
 				.plusHours(24)
@@ -176,7 +171,10 @@ public class RecipeService{
 		result.add(sasUrl);
 		result.add(expires);
 
-		System.out.println("User Delegation SAS generiert für Blob: " + blobName);
+		System.out.println("=== SAS generiert ===");
+		System.out.println("Blob Name : " + blobName);
+    	System.out.println("SAS URL   : " + sasUrl.substring(0, 180) + "...");
+		
 		return result;
 }
 	
