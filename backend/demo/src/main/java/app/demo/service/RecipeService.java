@@ -77,6 +77,12 @@ public class RecipeService{
 		return toOverviewDtos(recipes, permission);
 	}
 
+	@Transactional
+	public List<String> findTitles(String search){
+		List<String> titles = rep.findTitles(search);
+		return titles;
+	}
+
 	/**
 	 * find recipes by ids
 	 * @param ids of recipes

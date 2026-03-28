@@ -27,6 +27,15 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long>{
 	@Query("SELECT r FROM Recipe r LEFT JOIN FETCH r.ingredients z WHERE r.id = :id")
 	public Recipe findByIdwithIngredients(@Param("id") Long id);
 
+	@Query(value="""
+			SELECT r.rezept_name 
+			FROM rezepte r 
+			WHERE r.suchvektor @@ websearch_to_tsquery('german', :query) 
+				ORDER BY ts_rank_cd(r.suchvektor, websearch_to_tsquery('german', :query)) 
+			""",
+	nativeQuery=true)
+	public List<String> findTitles(String search);
+
 	public Page<Recipe> findByIdIn(List<Long> ids, Pageable pageable);
 	
 	@Query(value="""

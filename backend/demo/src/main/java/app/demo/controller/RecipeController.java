@@ -47,6 +47,13 @@ public class RecipeController {
     	PageRequest pageable = PageRequest.of(page,  size);
     	return service.findAll(pageable);
     }
+
+    @GetMapping("/rezepte/title")
+    public List<String> getTitles(
+        @RequestParam String search
+    ){
+        return service.findTitles(search);
+    }
     
     @GetMapping("/rezepte/{id}")
     public RecipeDetailDto getRecipe(@PathVariable Long id) {
