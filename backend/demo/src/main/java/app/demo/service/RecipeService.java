@@ -133,8 +133,8 @@ public class RecipeService{
 	@Transactional
 	public List<String> createUploadSas(String originalFileName) {
     
-		config config = new config();
-		String connectionString = config.connectionstring;
+		config Config = new config();
+		String connectionString = Config.connectionstring;
 
 		String blobName = UUID.randomUUID() + "-" + originalFileName;
 
