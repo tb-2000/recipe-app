@@ -1,48 +1,40 @@
 
-import { Link, useNavigate } from 'react-router-dom'
 import api from '../api/api'
-import qs from 'qs'
-import '../App.css'
-import RecipeImage from './RecipeImage'
-import ReactPaginate from 'react-paginate'
-import { useEffect, useState } from 'react'
-import SelectLogo from './SelectLogo'
-import clockImg from "../logos/clock.png"
+import RecipeImage from "../components/RecipeImage"
+import SelectLogo from "../components/SelectLogo"
+import clockImg from '../logos/clock.png'
+import ReactPaginate from "react-paginate"
+import { useEffect, useState } from "react"
+import { useWishlist } from '../context/WishlistContext'
+import { Link } from 'react-router-dom'
 
-export default function OverviewSearchedRecipes({categories, query, edit}: {categories: String[], query: string, edit:boolean}) {
-    const hasCategories = categories.length > 0 && categories !== null && categories !== undefined
-    const hasQuery = query.trim().length > 0 && query !== null && query !== undefined && query !== 'search for recipes...'
+export default function Wishlist() {
+    const { wishlist, toggleWishlist } = useWishlist();
 
     const [currentPage, setCurrentPage] = useState(0)
     const [pageCount, setPageCount] = useState(0)
     const [rezepte, setRezepte] = useState([])
-
-    const navigate = useNavigate()
-
-    const navigateToEdit = (id:Number) => {
-        navigate(`/edit/rezepte/${id}`)
-    }
-
+    
     const loadPage = async (page = 0) => {
         const params: { [key: string]: any } = {}
         params["page"] = page
-        params["size"] = 5
-        if(hasCategories)
-            params["categories"] = Array.isArray(categories) ? categories : [categories]
-        if(hasQuery)
-            params["query"] = query
+        params["size"] = Math.min(5, wishlist.length)
+        const ids = wishlist
         
-        const response = await api.get('/rezepte/search', {
-            params,
-        paramsSerializer: params=> qs.stringify(params, {arrayFormat: 'repeat'})})
+        const response = await api.get('/rezepte/search/ids', {
+            params: { ids } })
+        
+        console.log("wishlist: " + ids)
+        console.log("response: " + response.data)
 
         setRezepte(response.data.content)
         setPageCount(response.data.totalPages)
         setCurrentPage(response.data.number)
     }
+
     useEffect(() => {
         loadPage(0)
-    }, [query,categories])
+    }, [wishlist])
 
     const handlePageClick = (e: { selected: any }) => {
         const newPage = e.selected
@@ -50,14 +42,18 @@ export default function OverviewSearchedRecipes({categories, query, edit}: {cate
     }
 
     return (
-    <div>
-        <p>Hier findest du Deine gesuchten Rezepte:</p>
-        {rezepte && (
-            <div>
-                <h3>Search Results</h3>
+        <div>
+            <h1>Dein Kochbuch</h1>
+            <p>Hier findest du alle Rezepte, die du deiner Wunschliste hinzugefügt hast.</p>
+            {wishlist.length === 0 ? (
+                <p>Deine Wunschliste ist leer. Füge Rezepte hinzu, um sie hier zu sehen!</p>
+            ) : (
                 <ul>
+                    {wishlist.map((rezeptId) => (
+                        <li key={rezeptId}>{rezeptId}</li>
+                    ))}
                     {rezepte.map((rezept:any) => {
-                        return (
+                        return (  
                         <>
                             <Link to={`/rezepte/${rezept.id}`} className="recipe-link">
                                 <ul key={rezept.id}>
@@ -79,21 +75,19 @@ export default function OverviewSearchedRecipes({categories, query, edit}: {cate
                                     </div>
                                 </ul>
                             </Link>
-                                {edit && <button type="button" onClick={() => navigateToEdit(rezept.id)}>Rezept bearbeiten</button>}
                         </>
                         )
-                })}
-                {pageCount > 1 && (
-                                    <div>
-                                        <ReactPaginate previousLabel="Zurück" nextLabel="Weiter" 
-                                        breakLabel="..." pageCount={pageCount} marginPagesDisplayed={2}
-                                        pageRangeDisplayed={4} onPageChange={handlePageClick} forcePage={currentPage}
-                                        containerClassName='pagination-container' activeClassName='selected' />
-                                    </div>
-                                )}
+                        })}
+                        {pageCount > 1 && (
+                            <div>
+                                <ReactPaginate previousLabel="Zurück" nextLabel="Weiter" 
+                                breakLabel="..." pageCount={pageCount} marginPagesDisplayed={2}
+                                pageRangeDisplayed={4} onPageChange={handlePageClick} forcePage={currentPage}
+                                containerClassName='pagination-container' activeClassName='selected' />
+                            </div>
+                        )}
                 </ul>
-            </div>
-        )}
-    </div>
+            )}
+        </div>
     )
 }

@@ -1,24 +1,35 @@
 import api from '../api/api'
-import { useQuery } from '@tanstack/react-query'
 
 
-export default function CreateSas({ fileName, handleSas }: { fileName: string; handleSas: (sas: string) => void }) {
-    const getSasUrl = async () => {
-        if (!fileName) throw new Error("Kein Dateiname")
-        console.log("Fordere SAS für:", fileName)
-        const { data } = await api.get<string>("/upload-sas", { params: { fileName } })
-        console.log("SAS erhalten:", data)
-        handleSas(data)
-        return data as string
+export default async function CreateSas(fileName: string): Promise<{ sasUrl: string; expires: string }> {
+    if (!fileName?.trim()) {
+        throw new Error("Kein Dateiname angegeben");
     }
 
-    const { data: sasUrl, isLoading, isError, error } = useQuery({
-        queryKey: ['sas-url', fileName],     
-        queryFn: getSasUrl,
-        enabled: !!fileName,                  
-        staleTime: 5 * 60 * 1000,             
-    })
-    if (isLoading) return <p>Lade Bild...</p>
-    if (isError)   return <p>Fehler: {error?.message || "Unbekannt"}</p>
-    if (!sasUrl)   return <p>Kein Bild verfügbar</p>
+    console.log("CreateSas: Fordere SAS an für Datei:", fileName);
+
+    try {
+        const { data } = await api.get<string[]>("/upload-sas", {
+            params: { fileName }
+        });
+
+        if (!data || data.length < 2) {
+            throw new Error("Ungültige Antwort vom SAS-Endpunkt");
+        }
+
+        const [sasUrl, expires] = data;
+
+        console.log("CreateSas: SAS erfolgreich erhalten");
+        console.log("neue sas: ", sasUrl)
+        console.log("SAS läuft ab:", expires);
+
+        return {
+            sasUrl,
+            expires
+        };
+
+    } catch (error: any) {
+        console.error("CreateSas Fehler:", error.response?.data || error.message);
+        throw new Error(`SAS konnte nicht erstellt werden: ${error.message || error}`);
+    }
 }

@@ -5,11 +5,17 @@ import '../App.css'
 import RecipeImage from './RecipeImage'
 import { useEffect, useState } from 'react'
 import qs from 'qs'
+import SelectLogo from './SelectLogo'
+import clockImg from "../logos/clock.png"
+import { useWishlist } from '../context/WishlistContext'
+import { Link } from 'react-router-dom'
 
 export default function OverviewRecipesPage({edit}:{edit:boolean}) {
     const [currentPage, setCurrentPage] = useState(0)
     const [pageCount, setPageCount] = useState(0)
     const [rezepte, setRezepte] = useState([])
+
+    const { wishlist } = useWishlist();
     
     const navigate = useNavigate()
 
@@ -40,27 +46,35 @@ export default function OverviewRecipesPage({edit}:{edit:boolean}) {
 
     return (
         <div>
-            <p>Here you can find an overview of all recipes currently available in the app:</p>
             {rezepte && (
-                <ul>
+                <ul style={{gap:20}}>
                     {rezepte.map((rezept:any) => {
                         return (
                             <>
-                                <a href={`/rezepte/${rezept.id}`} className="recipe-link">
+                                <Link to={`/rezepte/${rezept.id}`} className="recipe-link">
+                                <div style={{margin:"10px"}}>
                                     <ul key={rezept.id}>
-                                        <strong>{rezept.title}</strong>
-                                        <RecipeImage rezept={rezept} />
-                                        <li>cooktime: {rezept.cooktime} minutes, prep time: {rezept.preptime} minutes, difficulty: {rezept.difficulty}</li>
-                                        <li>beschreibung: {rezept.beschreibung}</li>
-                                        <li>categories:</li>
-                                        <div>
-                                            <p style={{color: 'gray', marginLeft: '12px'}}>
+                                        <h3>{rezept.title}</h3>
+                                        <div className="zoom-container-normal">
+                                        <RecipeImage rezept={rezept} className='normal-recipe'/>
+                                       </div>
+                                        <li className='description-item'>
+                                            <img src={clockImg} alt="a clock symbol" className="logo" /> 
+                                            <span>{rezept.cooktime + rezept.preptime} Minuten, Anspruch: </span>
+                                            <img src = {SelectLogo(rezept.difficulty)} alt="difficulty logo" className="logo"/>
+                                        </li>
+                                        <li><div className="description-container">{rezept.description}</div></li>
+                                        <li>
+                                            <div>
+                                            <p className="categories-list">
                                                 {rezept?.categories.join(', ')}
                                             </p> 
                                         </div>
+                                        </li>
                                     </ul>
-                                </a>
-                                {edit && <button type="button" onClick={() => navigateToEdit(rezept.id)}>Edit recipe</button>}
+                                </div>
+                                </Link>
+                                {edit && <button type="button" onClick={() => navigateToEdit(rezept.id)}>Rezept bearbeiten</button>}
                             </>
                         )
                     })}

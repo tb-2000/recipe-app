@@ -56,10 +56,10 @@ export default function EditRecipes() {
           )}
           <button className="searchButton" type="button" onClick={() => setSearchActivated(true)}>Search</button>
           {searchActivated && (
-              <OverviewSearchedRecipes categories={categories} query={query} edit={true}/>
+              <OverviewSearchedRecipes categories={categories} query={query} edit={true} />
           )}
           {!searchActivated && (
-              <OverviewRecipes edit={true} />
+              <OverviewRecipes edit={true}/>
           )}
         </div>
   )

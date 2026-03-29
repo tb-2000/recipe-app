@@ -24,7 +24,7 @@ export default function SelectImage({ handleImage }: SelectImageProps) {
     })
     return (
         <div>
-            <h3>select image by Drag and Drop:</h3>
+            <h3>wähle Bild per Drag and Drop aus:</h3>
             <div {...getRootProps()} className="DragDrop-Container">
                 <input {...getInputProps()}/>
                 {isDragActive ? (
@@ -40,7 +40,7 @@ export default function SelectImage({ handleImage }: SelectImageProps) {
             </div>
             {image && <img src={URL.createObjectURL(image)} alt="Preview von Bild" style={{width:400, height:300}}/>}
             <div>
-                <button type="button" onClick={()  => setImage(null)}>Delete Picture</button>
+                <button type="button" onClick={()  => setImage(null)}>Bild löschen</button>
             </div>
         </div>
     )

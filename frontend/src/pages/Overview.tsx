@@ -26,7 +26,8 @@ export default function Overview() {
     )
     return (
         <div>
-            <p>Here you can find an overview of all categories currently available in the app:</p>
+            <h1>Übersicht aller Rezepte</h1>
+            <p>Hier findest Du eine Übersicht aller Rezepte auf Lecker-Essen</p>
             <form>
                 <input
                     type="text"
@@ -53,7 +54,7 @@ export default function Overview() {
             {searchActivated && (
                 <OverviewSearchedRecipes   categories={categories}
                 query={query.trim() !== 'search for recipes...' ? query.trim() : ''}
-                edit={false} />
+                edit={false}/>
             )}
             {!searchActivated && (
                 <OverviewRecipes edit={false} />

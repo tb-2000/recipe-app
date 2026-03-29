@@ -35,7 +35,7 @@ export default function OverviewCategories({onCategoriesChange, defaultCategorie
     )
     return (
         <div>
-            <p>Here you can find an overview of all categories currently available in the app:</p>
+            <p>Hier sind alle auf Lecker-Essen.com verfügbaren Kategorien für die Rezepte:</p>
             {isLoading && <p>Loading...</p>}
             {error && <p>Error occurred while fetching categories. {error.message}</p>}
             {data && (

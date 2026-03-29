@@ -3,9 +3,18 @@ import { useQuery } from '@tanstack/react-query'
 import api from '../api/api'
 import RecipeImage from '../components/RecipeImage'
 import '../App.css'
+import { useEffect, useMemo, useState } from 'react'
+import ChangeAmount from '../components/ChangeAmount'
+import DisplayInstructions from '../components/DisplayInstructions'
+import ZutatenImg from '../logos/zutaten.png'
+import { useWishlist } from '../context/WishlistContext'
 
 export default function RecipeDetail() {
     const { id } = useParams()
+    const [anzahlPersonen, setAnzahlPersonen] = useState<number>(2)
+
+    const { wishlist } = useWishlist();
+
     const { data, isLoading, error } = useQuery({
         queryKey: ['recipe', id],
         queryFn: async () => {
@@ -13,41 +22,75 @@ export default function RecipeDetail() {
             return response.data
         }
     })
-    return (
-        <div>
-            <p>Here you can find the details of the selected recipe {id}:</p>
-           {isLoading && <p>Loading recipe details...</p>}
-           {error && <p>Error occurred while fetching recipe details. {error.message}</p>}
-           {data && (
-               <div>
-                   <h1>{data.title}</h1>
-                   <p>{data.description}</p>
-                   <RecipeImage rezept={data}/>
-                   <ul>
-                        <li>Zubereitungszeit: {data.cooktime} Minuten, Vorbereitungszeit: {data.preptime} Minuten, Anspruch: {data.difficulty}</li>
-                        <li>Kochbuch: {data.cookbook}, Seite: {data.page}</li>
-                        <li>Kategorien:</li>
-                        {(data?.categories ?? []).map((category: any, index: number) => (
-                            <li key={index}>
-                                {category.name ?? '—'} 
-                                {/*  ↓ das ist der wichtige Teil ↓ */}
-                                <small style={{color:'gray', marginLeft:'12px'}}>
+
+    const recipe = useMemo(() => {
+        if(!data) return null
+        return ChangeAmount(anzahlPersonen, data)
+    }, [data, anzahlPersonen])
+
+    const handleAmountChange = (e: { target: { value: any } }) => {
+        const neueMenge = e.target.value
+        setAnzahlPersonen(neueMenge)
+    }
+    const handleAmountAddition = () => {
+        setAnzahlPersonen(anzahlPersonen+1)
+    }
+    const handleAmountSubtraction = () => {
+        setAnzahlPersonen(Math.max(1, anzahlPersonen-1))  
+    }
+
+    if (isLoading) return <p>Rezept wird geladen...</p>
+    if (error) return <p>Fehler beim Laden des Rezepts: {error.message}</p>
+    if (!recipe) return <p>Rezept nicht gefunden.</p>
+
+    return (      
+            <div>
+                <h1>{recipe.title}</h1>
+                <p style={{width:"600px", marginLeft:"auto", marginRight:"auto"}}>{recipe.description}</p>
+                <div className="zoom-container">
+                    <RecipeImage rezept={recipe} className='recipe-day'/>
+                </div>      
+                <ul>
+                    <div style={{display:'flex',flexDirection:'column', alignItems:'flex-start', width:"600px", marginLeft:"auto", marginRight:"auto", borderTop:"2px solid black", borderBottom:"2px solid black"}}>
+                        <li><strong>Zubereitungszeit:</strong> {recipe.cooktime} Minuten</li>
+                        <li><strong>Vorbereitungszeit:</strong> {recipe.preptime} Minuten</li>
+                        <li><strong>Anspruch:</strong> {recipe.difficulty}</li>
+                        <li><strong>Kochbuch:</strong> {recipe.cookbook}</li>
+                        <li><strong>Seite:</strong> {recipe.page}</li>
+                        <li><strong>Kategorien:</strong></li>
+                        <div style={{display:'flex',justifyContent:'center', alignItems:'center'}}>
+                            {(recipe?.categories ?? []).map((category: any, index: number) => (
+                            <li key={index}> 
+                                <small style={{color:'black', marginLeft:'12px', fontSize:'15px'}}>
                                     {JSON.stringify(category)}
                                 </small>
                             </li>
                         ))}
-                        <li>Zutaten:</li>
-                            {(data?.ingredients ?? []).map((ingredient: any, index: number) => (
-                                <li key={index}>
-                                    <small style={{color:'gray', marginLeft:'12px'}}>
-                                        {'—'} {ingredient.menge ?? '-'} {ingredient.einheit ?? '-'} {ingredient.name ?? '—'}
-                                    </small>
-                                </li>
-                            ))}
-                   </ul>
-                   <p>Anleitung: {data.instructions ?? <p>Anleitung nicht gelesen</p>}</p>
-               </div>
-           )}
-        </div>
-    )
+                        </div>
+                    </div>
+                    <li style={{marginLeft:"auto", marginRight:"auto", marginTop:"20px"}}>
+                        <div className="description-item">
+                            <strong>Zutaten</strong>
+                            <img src={ZutatenImg} alt="zutaten bild" className="logo" />
+                        </div>
+                    </li>
+                    <p style={{marginLeft:"auto", marginRight:"auto"}}>Für wie viele Personen ist es gedacht:</p>
+                    <div className="change-amount-buttons">
+                        <button type="button" onClick={handleAmountSubtraction} style={{width:50}}>-</button>
+                        <input type="text" value={anzahlPersonen} onChange={handleAmountChange} style={{width:'60px', height:'40px'}}></input>
+                        <button type="button" onClick={handleAmountAddition} style={{width:50}}>+</button>
+                    </div>
+                    <div style={{display:"flex", flexDirection:"column", alignItems:"center", width:"600px", marginLeft:"auto", marginRight:"auto", borderTop:"2px solid black", borderBottom:"2px solid black"}}>
+                        {(recipe?.ingredients ?? []).map((ingredient: any, index: number) => (
+                            <li key={index}>
+                                <small style={{color:'black', marginLeft:'12px', fontSize:'15px'}}>
+                                    {ingredient.menge ?? '-'} {ingredient.einheit ?? '-'} {ingredient.name ?? '—'}
+                                </small>
+                            </li>
+                        ))}
+                    </div>
+                </ul>
+                <div>Anleitung: {recipe.instructions ? <DisplayInstructions instructions={recipe.instructions}/> : <p>Anleitung nicht gelesen</p>}</div>
+            </div>       
+)
 }
