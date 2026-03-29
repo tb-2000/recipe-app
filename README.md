@@ -69,17 +69,17 @@ recipe-app/
 ## Screenshots
 
 ### Home
-![Home](screenshots/home.jpeg)
+![Home](screenshots/home.png)
 
 ### Rezept-Übersicht
-![Rezept-Übersicht](screenshots/overview.jpeg)
+![Rezept-Übersicht](screenshots/overview.png)
 
 ### Rezept-Detailansicht
-![Rezept-Detailansicht](screenshots/detail.jpeg)
+![Rezept-Detailansicht](screenshots/detail.png)
 
 ### Wunschliste / Kochbuch
-![Wunschliste](screenshots/wishlist.jpeg)
+![Wunschliste](screenshots/wishlist.png)
 
 ### Rezept einreichen
-![Rezept einreichen](screenshots/submit.jpeg)
+![Rezept einreichen](screenshots/submit.png)
 
