@@ -62,10 +62,13 @@ public class RecipeController {
 
     @GetMapping("/rezepte/search/ids")
     public Page<OverviewDto> getRecipesByIds(
-        @RequestParam(defaultValue="1,2,3,4,5,6") List<Long> ids,
+        @RequestParam List<Long> ids,
         @RequestParam(defaultValue="0") int page,
         @RequestParam(defaultValue="3") int size
     ){
+        if (ids == null || ids.isEmpty()) {
+            return Page.empty();
+        }
         PageRequest pageable = PageRequest.of(page,  size);
         return service.findByIds(ids, pageable);
     }
