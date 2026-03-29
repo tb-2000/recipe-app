@@ -69,10 +69,10 @@ recipe-app/
 ## Screenshots
 
 ### Home
-![Home Menü](screenshots/Home.jpeg)
+![Home](screenshots/home.jpeg)
 
 ### Rezept-Übersicht
-![Rezept-Übersicht](screenshots/Übersicht.jpeg)
+![Rezept-Übersicht](screenshots/overview.jpeg)
 
 ### Rezept-Detailansicht
 ![Rezept-Detailansicht](screenshots/detail.jpeg)
@@ -81,5 +81,5 @@ recipe-app/
 ![Wunschliste](screenshots/wishlist.jpeg)
 
 ### Rezept einreichen
-![Submit-Recipe](screenshots/submit.jpeg)
+![Rezept einreichen](screenshots/submit.jpeg)
 
