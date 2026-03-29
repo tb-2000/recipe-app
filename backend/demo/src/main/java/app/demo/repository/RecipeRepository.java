@@ -30,8 +30,8 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long>{
 	@Query(value="""
 			SELECT r.rezept_name 
 			FROM rezepte r 
-			WHERE r.suchvektor @@ websearch_to_tsquery('german', :query) 
-				ORDER BY ts_rank_cd(r.suchvektor, websearch_to_tsquery('german', :query)) 
+			WHERE r.suchvektor @@ websearch_to_tsquery('german', :search) 
+				ORDER BY ts_rank_cd(r.suchvektor, websearch_to_tsquery('german', :search)) 
 			""",
 	nativeQuery=true)
 	public List<String> findTitles(String search);
