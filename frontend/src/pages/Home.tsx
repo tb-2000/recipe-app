@@ -17,16 +17,16 @@ export default function Home() {
                 <div>
                     <RecipeOfTheDay id={id}/>
                 </div>
-                <h3 className="headline">Highlights der Redaktion</h3>
+                <h2 className="headline">Highlights der Redaktion</h2>
                 <RecipeHighlights ids = {ids} size = {size} />  
-                <h3 className="headline">Oster Rezepte</h3>
+                <h2 className="headline">Oster Rezepte</h2>
                 <div className="background-container">
                     <div className="background-div"></div>
                     <div className="special-container">
                         <RecipeHighlights ids = {idsEastern} size = {sizeEastern} />
                     </div>
                 </div>
-                <h3 className="headline">Beliebte Rezepte</h3>
+                <h2 className="headline">Beliebte Rezepte</h2>
                 <RecipeHighlights ids = {ids} size = {size} />
                 <RecipeHighlights ids = {ids} size = {size} />
             </div>

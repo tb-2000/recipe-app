@@ -49,9 +49,9 @@ export default function Wishlist() {
                 <p>Deine Wunschliste ist leer. Füge Rezepte hinzu, um sie hier zu sehen!</p>
             ) : (
                 <ul>
-                    {wishlist.map((rezeptId) => (
+                    {/* {wishlist.map((rezeptId) => (
                         <li key={rezeptId}>{rezeptId}</li>
-                    ))}
+                    ))} */}
                     {rezepte.map((rezept:any) => {
                         return (  
                         <>

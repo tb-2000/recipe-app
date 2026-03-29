@@ -32,7 +32,6 @@ export default function Overview() {
                 <input
                     type="text"
                     placeholder={query}
-                    value={query}
                     onChange={(e) => setQuery(e.target.value)}
                 />
             </form>
