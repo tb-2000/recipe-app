@@ -11,7 +11,7 @@ export default function DisplayInstructions({ instructions }:{ instructions:any 
     console.log("1st instrArray-Element: ", instrArray[0])
 
     return(
-        <div style={{width:"600px", gap:"30px", marginLeft:"auto", marginRight:"auto"}}>
+        <div className="instructions-container">
             {instrArray.map((line, index) => {
                 return (
                     <div key={index} className={index % 2 === 0 ? "instructions-even" : "instructions-odd"}>

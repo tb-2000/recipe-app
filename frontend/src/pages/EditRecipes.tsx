@@ -29,7 +29,7 @@ export default function EditRecipes() {
        queryFn: fetchCategories}
     )
     return (
-        <div>
+        <div className="overview-container">
           <h1>Edit Recipes</h1>
           <p>This is the edit recipes page.</p>
           <form>

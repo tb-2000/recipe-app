@@ -9,27 +9,42 @@ export default function Home() {
     const idsEastern = [3, 4, 5, 6]
     const sizeEastern = 2
     return (
-        <div>
+        <div className="home-container">
             <h1>Home</h1>
             <p>Willkommen auf Lecker-Essen.com! Hier findest Du eine breite Auswahl an leckeren Rezepten.</p>
-            <div>
-                <h3 className="headline-recipe-day">Rezept des Tages</h3>
-                <div>
-                    <RecipeOfTheDay id={id}/>
-                </div>
+
+            <h3 className="headline-recipe-day">Rezept des Tages</h3>
+            <RecipeOfTheDay id={id}/>
+
+            <div className="overview-link-container">
                 <h2 className="headline">Highlights der Redaktion</h2>
-                <RecipeHighlights ids = {ids} size = {size} />  
-                <h2 className="headline">Oster Rezepte</h2>
-                <div className="background-container">
-                    <div className="background-div"></div>
-                    <div className="special-container">
-                        <RecipeHighlights ids = {idsEastern} size = {sizeEastern} />
-                    </div>
-                </div>
-                <h2 className="headline">Beliebte Rezepte</h2>
-                <RecipeHighlights ids = {ids} size = {size} />
-                <RecipeHighlights ids = {ids} size = {size} />
+                <a href={"/rezepte"} className="overview-link">Mehr ansehen<span className="arrow-right">&rarr;</span></a>
             </div>
+            <RecipeHighlights ids = {ids} size = {size} />
+
+            <div className="overview-link-container">
+                <h2 className="headline">Oster Rezepte</h2>
+                <a href={"/rezepte"} className="overview-link">Mehr ansehen<span className="arrow-right">&rarr;</span></a>
+            </div>
+            <div className="background-container">
+                <div className="background-div"></div>
+                <div className="special-container">
+                    <RecipeHighlights ids = {idsEastern} size = {sizeEastern} />
+                </div>
+            </div>
+
+            <div className="overview-link-container">
+                <h2 className="headline">Beliebte Rezepte</h2>
+                <a href={"/rezepte"} className="overview-link">Mehr ansehen<span className="arrow-right">&rarr;</span></a>
+            </div>
+            <RecipeHighlights ids = {ids} size = {size} />
+
+            <div className="overview-link-container">
+                <h2 className="headline">Neueste Rezepte</h2>
+                <a href={"/rezepte"} className="overview-link">Mehr ansehen<span className="arrow-right">&rarr;</span></a>
+            </div>
+            <RecipeHighlights ids = {ids} size = {size} /> 
+                 
         </div>
     )
 }

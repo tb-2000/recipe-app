@@ -25,7 +25,7 @@ export default function Overview() {
        queryFn: fetchCategories}
     )
     return (
-        <div>
+        <div className="overview-container">
             <h1>Übersicht aller Rezepte</h1>
             <p>Hier findest Du eine Übersicht aller Rezepte auf Lecker-Essen</p>
             <form>

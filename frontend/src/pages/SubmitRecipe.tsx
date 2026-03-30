@@ -226,7 +226,7 @@ const handleSubmit = async (e: { preventDefault: () => void }) => {
 }
 
   return (
-    <div>
+    <div className="submit-recipe-container">
       {edit ? (
         <>
         <h1>Rezept bearbeiten</h1>
@@ -241,7 +241,12 @@ const handleSubmit = async (e: { preventDefault: () => void }) => {
       )}
       <form onSubmit={handleSubmit}>
         <div><strong>Titel:</strong></div>
-        <input type="text" name="title" value={recipe.title} style={{ display: 'block', width: '100%' }} onChange={handleTitleChange} placeholder="Rezept Namen bitte eingeben" required></input>
+        {edit 
+            ? 
+            <input type="text" name="title" value={recipe.title} className="title-input" onChange={handleTitleChange} required></input> 
+            : 
+            <input type="text" name="title" className="title-input" onChange={handleTitleChange} placeholder="Rezept Namen bitte eingeben" required></input>
+        }
         {filteredTitles.length !== 0 && (<>
             <strong>Achtung!</strong>
             <p>Folgende Rezeptnamen sind schon vergeben</p>
@@ -253,46 +258,91 @@ const handleSubmit = async (e: { preventDefault: () => void }) => {
             </ul>
             <p>Bitte suchen Sie sich einen anderen aus</p>
         </>)}
-        <div><strong>Beschreibung:</strong></div>
-        <textarea name="description" id="description" style={{ display: 'block', width: '100%', height:100 }} onChange={handleChange} placeholder="Bitte eine kurze Beschreibung einfügen..."></textarea>
+        <div>
+            <strong>Beschreibung:</strong>
+        </div>
+        {edit 
+            ? 
+            <textarea name="description" id="description" className="description-input" onChange={handleChange} value={recipe.description}></textarea>
+            :
+            <textarea name="description" id="description" className="description-input" onChange={handleChange} placeholder="Bitte eine kurze Beschreibung einfügen..."></textarea>
+        }     
         {edit && (
             <div>
                 <p>aktuelles Bild vom Rezept: {recipe.title}</p>
                 <RecipeImage rezept={recipe} className="recipe-day"/>
             </div>
         )}
-        <div><strong>neues Bild:</strong></div>
+        <div>
+            <strong>neues Bild:</strong>
+        </div>
         <SelectImage handleImage={setImage}/>
         <div className="form-group">
             <div>
                 <strong>Kochbuch:</strong>
             </div>
-            <input type="text" name="cookbook" id="cookbook" onChange={handleChange} placeholder="im welchen Kochbuch..."></input>
+            {edit
+                ?
+                <input type="text" name="cookbook" id="cookbook" onChange={handleChange} value={recipe.cookbook}></input>
+                :
+                <input type="text" name="cookbook" id="cookbook" onChange={handleChange} placeholder="im welchen Kochbuch..."></input>
+            }  
             <div>
                 <strong>Seite:</strong>
             </div>
-            <input type="text" name="page" id="page" onChange={handleChange} placeholder="17"></input>
+            {edit
+                ?
+                <input type="text" name="page" id="page" onChange={handleChange} value={recipe.page}></input>
+                :
+                <input type="text" name="page" id="page" onChange={handleChange} placeholder="17"></input>
+            }     
             <div>
                 <strong>Zubereitungszeit (in Minuten):</strong>
             </div>
-            <input type="text" name="cooktime" id="cooktime" onChange={handleChange} placeholder="45"></input>
+            {edit
+                ?
+                <input type="text" name="cooktime" id="cooktime" onChange={handleChange} value={recipe.cooktime}></input>
+                :
+                <input type="text" name="cooktime" id="cooktime" onChange={handleChange} placeholder="45"></input>
+            }
             <div>
                 <strong>Vorbereitungszeit (in Minuten):</strong>
             </div>
-            <input type="text" name="preptime" id="preptime" onChange={handleChange} placeholder="15"></input>
+            {edit
+                ?
+                <input type="text" name="preptime" id="preptime" onChange={handleChange} value={recipe.preptime}></input>
+                :
+                <input type="text" name="preptime" id="preptime" onChange={handleChange} placeholder="15"></input>
+            }
             <div>
                 <strong>Anspruch:</strong>
             </div>
-            <select defaultValue={"mittel"} onChange={handleChange}>
-                <option value="leicht">leicht</option>
-                <option value="mittel">mittel</option>
-                <option value="schwer">schwer</option>
-            </select>
+            {edit
+                ? (
+                <select value={recipe.difficulty} onChange={handleChange}>
+                    <option value="leicht">leicht</option>
+                    <option value="mittel">mittel</option>
+                    <option value="schwer">schwer</option>
+                </select>
+                )
+                : (
+                <select defaultValue={"mittel"} onChange={handleChange}>
+                    <option value="leicht">leicht</option>
+                    <option value="mittel">mittel</option>
+                    <option value="schwer">schwer</option>
+                </select>
+                )
+            }
             {/*<input type="text" name="difficulty" id="difficulty" onChange={handleChange} placeholder="mittel"></input>*/}
         </div>
         <div><strong>Anleitung:</strong></div>
         <div>
-            <textarea name="instructions" id="instructions" style={{ display: 'block', width: '100%', height:500 }} onChange={handleChange} placeholder="Bitte eine Anleitung angeben..." required></textarea>
+        {edit
+            ?
+            <textarea name="instructions" id="instructions" className="instructions-input" onChange={handleChange} value={recipe.instructions} required></textarea>
+            :
+            <textarea name="instructions" id="instructions" className="instructions-input" onChange={handleChange} placeholder="Bitte eine Anleitung angeben..." required></textarea>
+        }
         </div>
         <strong>Zutaten</strong>
         <div className="ingredients-header">
@@ -306,17 +356,37 @@ const handleSubmit = async (e: { preventDefault: () => void }) => {
                 <label htmlFor="zutat">Zutat:</label>
             </div>
             <div>{" "}</div>
-            <div className="form-group-ingredients">
-                {recipe.ingredients.map((ingredient: { menge: string | number | readonly string[] | undefined; einheit: string | number | readonly string[] | undefined; name: string | number | readonly string[] | undefined }, index: number) => (
-                <div key={index} className="ingredients-row">
-                    <input type="text" className="ingredients-menge" placeholder="50" onChange={(e) => handleIngredientsChange(index, 'menge', e.target.value)}></input>
-                    <input type="text" className="ingredients-einheit" placeholder="Gramm" onChange={(e) => handleIngredientsChange(index, 'einheit', e.target.value)}></input>
-                    <input type="text" className="ingredients-zutat" placeholder="Hartkäse" onChange={(e) => handleIngredientsChange(index, 'name', e.target.value)}></input>
-                    <button type="button" className="delete-ingredient-button" onClick={() => deleteIngredient(index)}>x</button>
-                </div>
-            ))}
-            </div>
         </div>
+            <div className="form-group-ingredients">
+                {edit
+                    ? (  
+                        <>
+                        {recipe.ingredients.map((ingredient: { menge: string | number | readonly string[] | undefined; einheit: string | number | readonly string[] | undefined; name: string | number | readonly string[] | undefined }, index: number) => (
+                            <div key={index} className="ingredients-row">
+                                <input type="text" className="ingredients-menge" value={ingredient.menge} onChange={(e) => handleIngredientsChange(index, 'menge', e.target.value)}></input>
+                                <input type="text" className="ingredients-einheit" value={ingredient.einheit} onChange={(e) => handleIngredientsChange(index, 'einheit', e.target.value)}></input>
+                                <input type="text" className="ingredients-zutat" value={ingredient.name} onChange={(e) => handleIngredientsChange(index, 'name', e.target.value)}></input>
+                                <button type="button" className="delete-ingredient-button" onClick={() => deleteIngredient(index)}>x</button>
+                            </div>
+                        ))}
+                        </>
+                    )
+                    : (
+                        <>
+                        {recipe.ingredients.map((ingredient: { menge: string | number | readonly string[] | undefined; einheit: string | number | readonly string[] | undefined; name: string | number | readonly string[] | undefined }, index: number) => (
+                            <div key={index} className="ingredients-row">
+                                <input type="text" className="ingredients-menge" placeholder="50" onChange={(e) => handleIngredientsChange(index, 'menge', e.target.value)}></input>
+                                <input type="text" className="ingredients-einheit" placeholder="Gramm" onChange={(e) => handleIngredientsChange(index, 'einheit', e.target.value)}></input>
+                                <input type="text" className="ingredients-zutat" placeholder="Hartkäse" onChange={(e) => handleIngredientsChange(index, 'name', e.target.value)}></input>
+                                <button type="button" className="delete-ingredient-button" onClick={() => deleteIngredient(index)}>x</button>
+                            </div>
+                        ))}
+                        </>
+                    )
+                }
+
+            </div>
+
         <button type="button" onClick={addIngredient}>Add Ingredient</button>
         <div><strong>Kategorien</strong></div>
         <OverviewCategories onCategoriesChange={handleCategoriesChange} defaultCategories={recipe.categories}/>

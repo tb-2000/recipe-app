@@ -44,31 +44,33 @@ export default function RecipeDetail() {
     if (!recipe) return <p>Rezept nicht gefunden.</p>
 
     return (      
-            <div>
+            <div className="recipe-detail-container">
                 <h1>{recipe.title}</h1>
-                <p style={{width:"600px", marginLeft:"auto", marginRight:"auto"}}>{recipe.description}</p>
-                <div className="zoom-container">
+                <div className="zoom-container-detail">
                     <RecipeImage rezept={recipe} className='recipe-day'/>
-                </div>      
+                </div>     
+                <div className="description-detail">
+                    {recipe.description}
+                </div> 
                 <ul>
-                    <div style={{display:'flex',flexDirection:'column', alignItems:'flex-start', width:"600px", marginLeft:"auto", marginRight:"auto", borderTop:"2px solid black", borderBottom:"2px solid black"}}>
+                    <div className="detail-description-container">
                         <li><strong>Zubereitungszeit:</strong> {recipe.cooktime} Minuten</li>
                         <li><strong>Vorbereitungszeit:</strong> {recipe.preptime} Minuten</li>
                         <li><strong>Anspruch:</strong> {recipe.difficulty}</li>
                         <li><strong>Kochbuch:</strong> {recipe.cookbook}</li>
                         <li><strong>Seite:</strong> {recipe.page}</li>
                         <li><strong>Kategorien:</strong></li>
-                        <div style={{display:'flex',justifyContent:'center', alignItems:'center'}}>
+                        <div className="categories-detail-container">
                             {(recipe?.categories ?? []).map((category: any, index: number) => (
                             <li key={index}> 
-                                <small style={{color:'black', marginLeft:'12px', fontSize:'15px'}}>
+                                <small className="categories-detail">
                                     {JSON.stringify(category)}
                                 </small>
                             </li>
                         ))}
                         </div>
                     </div>
-                    <li style={{marginLeft:"auto", marginRight:"auto", marginTop:"20px"}}>
+                    <li>
                         <div className="description-item">
                             <strong>Zutaten</strong>
                             <img src={ZutatenImg} alt="zutaten bild" className="logo" />
@@ -80,7 +82,7 @@ export default function RecipeDetail() {
                         <input type="text" value={anzahlPersonen} onChange={handleAmountChange} style={{width:'60px', height:'40px'}}></input>
                         <button type="button" onClick={handleAmountAddition} style={{width:50}}>+</button>
                     </div>
-                    <div style={{display:"flex", flexDirection:"column", alignItems:"center", width:"600px", marginLeft:"auto", marginRight:"auto", borderTop:"2px solid black", borderBottom:"2px solid black"}}>
+                    <div className="ingredients-list">
                         {(recipe?.ingredients ?? []).map((ingredient: any, index: number) => (
                             <li key={index}>
                                 <small style={{color:'black', marginLeft:'12px', fontSize:'15px'}}>

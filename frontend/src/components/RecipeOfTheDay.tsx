@@ -23,7 +23,7 @@ export default function RecipeOfTheDay({ id }: { id: number }) {
                 <div className="container">        
                     <a href={`/rezepte/${rezept.id}`} className="recipe-link">
                         <ul key={rezept.id}>
-                            <strong className="recipe-day-title">{rezept.title}</strong>
+                            <h3>{rezept.title}</h3>
                             <div className="zoom-container">
                                 <RecipeImage rezept={rezept} className="recipe-day"/>
                             </div>

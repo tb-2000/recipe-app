@@ -55,6 +55,10 @@ export default function RecipeImage({ rezept, className }: { rezept:any, classNa
         src={currentSasUrl}
         alt="Rezept Foto"
         className = {`${className}`}
+        width={className === 'highlights-recipe' ? 300 : 400} // Beispiel: 300px für Highlights, 400px für andere
+        height={className === 'highlights-recipe' ? 200 : 300} // Beispiel: 200px für Highlights, 300px für andere
+        decoding="async"
+        loading="lazy"
         onError={(e) => {
           console.error("Bild konnte nicht geladen werden", e)
           console.log("incorrect sas: ", currentSasUrl)

@@ -47,12 +47,12 @@ export default function OverviewRecipesPage({edit}:{edit:boolean}) {
     return (
         <div>
             {rezepte && (
-                <ul style={{gap:20}}>
+                <ul>
                     {rezepte.map((rezept:any) => {
                         return (
                             <>
                                 <Link to={`/rezepte/${rezept.id}`} className="recipe-link">
-                                <div style={{margin:"10px"}}>
+                                <div>
                                     <ul key={rezept.id}>
                                         <h3>{rezept.title}</h3>
                                         <div className="zoom-container-normal">
