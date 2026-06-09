@@ -25,7 +25,7 @@ Eine moderne Webanwendung zum Entdecken, Speichern und Verwalten von Rezepten.
 - Java 21
 - Node.js (v18 oder höher)
 - Maven
-- MySQL/MariaDB Datenbank
+- Postgresql
 
 ### 1. Backend starten
 
