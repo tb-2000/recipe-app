@@ -34,6 +34,7 @@ Eine moderne Webanwendung zum Entdecken, Speichern und Verwalten von Rezepten.
 ```bash
 cd backend/demo
 ./mvnw spring-boot:run
+```
 
 Das Backend läuft dann unter http://localhost:8080
 
@@ -45,17 +46,18 @@ Das Backend läuft dann unter http://localhost:8080
 cd frontend
 npm install
 npm run dev
+```
 
 Das Frontend ist dann erreichbar unter: http://localhost:5173
 
 
 ### Mit Docker Compose starten (optional)
 
-unter recipe-app diesen Befehl eingeben im Terminal:
+unter recipe-app diesen Befehl im Terminal eingeben:
 
 ```bash
 docker-compose up --build
-
+```
 
 ### Projektstruktur
 recipe-app/
@@ -69,17 +71,17 @@ recipe-app/
 ## Screenshots
 
 ### Home
-![Home](https://raw.githubusercontent.com/tb-2000/recipe-app/main/screenshots/home.png)
+![Home](screenshots/home.png)
 
 ### Rezept-Übersicht
-![Rezept-Übersicht](https://raw.githubusercontent.com/tb-2000/recipe-app/main/screenshots/overview.png)
+![Rezept-Übersicht](screenshots/overview.png)
 
 ### Rezept-Detailansicht
-![Rezept-Detailansicht](https://raw.githubusercontent.com/tb-2000/recipe-app/main/screenshots/detail.png)
+![Rezept-Detailansicht](screenshots/detail.png)
 
 ### Wunschliste / Kochbuch
-![Wunschliste](https://raw.githubusercontent.com/tb-2000/recipe-app/main/screenshots/wishlist.png)
+![Wunschliste](screenshots/wishlist.png)
 
 ### Rezept einreichen
-![Rezept einreichen](https://raw.githubusercontent.com/tb-2000/recipe-app/main/screenshots/submit.png)
+![Rezept einreichen](screenshots/submit.png)
 
