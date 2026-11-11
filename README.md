@@ -69,17 +69,17 @@ recipe-app/
 ## Screenshots
 
 ### Home
-![Home](screenshots/home.png)
+![Home](https://raw.githubusercontent.com/tb-2000/recipe-app/main/screenshots/home.png)
 
 ### Rezept-Übersicht
-![Rezept-Übersicht](screenshots/overview.png)
+![Rezept-Übersicht](https://raw.githubusercontent.com/tb-2000/recipe-app/main/screenshots/overview.png)
 
 ### Rezept-Detailansicht
-![Rezept-Detailansicht](screenshots/detail.png)
+![Rezept-Detailansicht](https://raw.githubusercontent.com/tb-2000/recipe-app/main/screenshots/detail.png)
 
 ### Wunschliste / Kochbuch
-![Wunschliste](screenshots/wishlist.png)
+![Wunschliste](https://raw.githubusercontent.com/tb-2000/recipe-app/main/screenshots/wishlist.png)
 
 ### Rezept einreichen
-![Rezept einreichen](screenshots/submit.png)
+![Rezept einreichen](https://raw.githubusercontent.com/tb-2000/recipe-app/main/screenshots/submit.png)
 
